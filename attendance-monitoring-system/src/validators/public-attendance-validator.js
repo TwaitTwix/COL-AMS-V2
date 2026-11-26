@@ -11,6 +11,6 @@ export const publicAttendanceSchema=z.object({
  latitude:z.number().finite().min(-90).max(90),longitude:z.number().finite().min(-180).max(180),
  accuracy:z.number().finite().min(0).max(100000),location_captured_at:z.string().datetime({offset:true}),
  signature:z.array(z.array(point).min(2).max(1024)).min(1).max(32).refine(validSignature,{message:'Add a complete handwritten signature in the box'}),
- privacy_accepted:z.literal(true),privacy_version:z.enum([ATTENDANCE_PRIVACY_VERSION,'2026-11-26-attendance-v1']),
+ privacy_accepted:z.literal(true),privacy_version:z.enum([ATTENDANCE_PRIVACY_VERSION,'2026-11-27-attendance-v2','2026-11-26-attendance-v1']),
 }).strict();
 export const publicLinkSchema=z.object({version:z.number().int().min(0),enabled:z.boolean(),replace:z.boolean().default(false),confirmation:z.string().max(30).default(''),reason:z.string().trim().min(3).max(500)}).strict();

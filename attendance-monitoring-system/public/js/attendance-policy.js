@@ -1,4 +1,4 @@
-export const ATTENDANCE_PRIVACY_VERSION='2026-11-27-attendance-v2';
+export const ATTENDANCE_PRIVACY_VERSION='2026-11-27-attendance-v3';
 export function validSignature(strokes){
   if(!Array.isArray(strokes)||strokes.length<1||strokes.length>32)return false;
   let count=0,length=0;

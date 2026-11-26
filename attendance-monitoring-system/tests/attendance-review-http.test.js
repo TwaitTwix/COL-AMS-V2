@@ -21,6 +21,9 @@ test('review decisions, unflagged bulk approval and manual requests use verified
  const manual={request_id:randomUUID(),student_id:student,checkpoint_key:'default',reason:'Participant has no usable phone',confirm:true};
  assert.equal((await send('/events/'+event+'/manual-attendance',{...manual,latitude:17},'POST')).status,400);
  assert.equal((await send('/events/'+event+'/manual-attendance',manual,'POST')).status,202);assert.equal(calls.at(-1).args.p_actor,actor);assert.equal(calls.at(-1).args.p_lat,undefined);
+ assert.equal((await fetch(base+'/events/'+event+'/location-attempts?page=2&search=SCHOOL')).status,200);assert.deepEqual(calls.at(-1),{name:'list_event_location_attempts',args:{p_actor:actor,p_event:event,p_page:2,p_search:'SCHOOL'}});
+ assert.equal((await fetch(base+'/events/'+event+'/location-attempts?page=0')).status,400);
+ deny=true;assert.equal((await fetch(base+'/events/'+event+'/location-attempts')).status,403);enabled=false;const before=calls.length;assert.equal((await fetch(base+'/events/'+event+'/location-attempts')).status,403);assert.equal(calls.length,before);enabled=true;
  deny=true;assert.equal((await fetch(base+'/reviews/'+id)).status,403);enabled=false;const count=calls.length;assert.equal((await send('/reviews/'+id,decision)).status,403);assert.equal(calls.length,count);
 });
 test('durable review worker requires revision mode and a private scheduler credential, and hides failures',async t=>{

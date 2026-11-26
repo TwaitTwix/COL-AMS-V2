@@ -24,12 +24,27 @@ begin
  if again->'body'->>'receipt_id'<>result->'body'->>'receipt_id' then raise exception 'FAIL: request replay';end if;
  result:=public.submit_public_attendance_details(token,gen_random_uuid(),repeat('d',64),repeat('e',64),'Another browser',repeat('f',64),'SELF-001','Synthetic Participant','ISAP','TEST 1A',c.college,c.name,'default',17,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v2',true);
  if result->>'status_code'<>'409' or (select count(*) from public.public_attendance_submissions where event_id=event)<>1 then raise exception 'FAIL: duplicate slot';end if;
- result:=public.submit_public_attendance_details(token,gen_random_uuid(),repeat('a',64),repeat('b',64),'Synthetic browser',repeat('d',64),'SELF-002','Outside Participant','ISAP','TEST 1A',c.college,c.name,'default',18,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v2',true);
+ request:=gen_random_uuid();
+ result:=public.submit_public_attendance_details(token,request,repeat('a',64),repeat('b',64),'Synthetic browser',repeat('d',64),'SELF-002','Outside Participant','ISAP','TEST 1A',c.college,c.name,'default',18,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v2',true);
  if result->>'status_code'<>'400' or result->'body'->'error'->>'code'<>'outside_geofence' then raise exception 'FAIL: no-list geofence guard %',result;end if;
+
+ if (result->'body'->'location'->>'distance_meters')::numeric<100000 or result->'body'->'location'->>'radius_meters'<>'100' or result->'body'->'attempts'->>'remaining'<>'2' then raise exception 'FAIL: rejection guidance';end if;
+ if not exists(select 1 from public.public_attendance_requests where request_id=request and distance_meters>100000 and venue_snapshot->>'radius_meters'='100' and user_agent='Synthetic browser' and claimed_name='Outside Participant') then raise exception 'FAIL: missing immutable rejection evidence';end if;
+ again:=public.submit_public_attendance_details(token,request,repeat('a',64),repeat('b',64),'Synthetic browser',repeat('d',64),'SELF-002','Outside Participant','ISAP','TEST 1A',c.college,c.name,'default',18,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v3',true);
+ if again is distinct from result or (select rejected_count from public.public_attendance_attempts where event_id=event and school_id='SELF-002')<>1 then raise exception 'FAIL: retry charged twice or changed response';end if;
+ again:=public.list_event_location_attempts(root,event,1,'SELF-002');
+ if again->>'total'<>'1' or again->'items'->0->>'school_id'<>'SELF-002' then raise exception 'FAIL: standalone attempt search';end if;
+ begin perform public.list_event_location_attempts(gen_random_uuid(),event,1,'');raise exception 'FAIL: unauthorized attempt access';exception when insufficient_privilege then null;end;
  job:=public.create_operational_report(root,gen_random_uuid(),event,'preview',false);
  result:=public.get_operational_report(root,(job->>'job_id')::uuid);
  if result->'items'->0->>'college'<>c.college or result->'items'->0->>'course'<>c.name or result->'items'->0->>'affiliation_source'<>'Self-declared' or result->'summary'->'totals'->>'eligible_checkpoint_slots'<>'0' then raise exception 'FAIL: report self-declared details / denominator';end if;
  if result->'summary'->'totals'->>'pending_review'<>'1' then raise exception 'FAIL: pending attendance summary';end if;
+
+ result:=public.submit_public_attendance_details(token,gen_random_uuid(),repeat('a',64),repeat('b',64),'Synthetic browser',repeat('e',64),'SELF-002','Outside Participant','ISAP','TEST 1A',c.college,c.name,'default',17,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v3',true);
+ if result->>'status_code'<>'202' then raise exception 'FAIL: retry inside venue';end if;
+ select * into strict s from public.public_attendance_submissions where event_id=event and school_id='SELF-002';
+ again:=public.get_attendance_review_case(root,(select id from public.attendance_review_cases where submission_id=s.id));
+ if jsonb_array_length(again->'location_attempts')<>1 or (again->'location_attempts'->0->>'distance_meters')::numeric<100000 then raise exception 'FAIL: case rejection evidence';end if;
  preview:=public.save_class_section(root,null,0,jsonb_build_object('institution','ISAP','college',c.college,'course',c.name,'name','Official list fixture','academic_year','2026-2027','term','Test'),'Official roster compatibility');section:=(preview->>'id')::uuid;
  preview:=public.preview_class_roster(root,section,jsonb_build_array(jsonb_build_object('row_number',2,'school_id','LISTED-001','full_name','Listed Participant')),'test.xlsx','merge');perform public.commit_class_roster(root,(preview->>'id')::uuid,false,false,'Official roster compatibility');
  insert into public.events(id,name,institution,latitude,longitude,radius_meters,starts_at,ends_at) values(official_event,'Official roster compatibility','ISAP',17,121,100,now()+interval '2 days',now()+interval '3 days');

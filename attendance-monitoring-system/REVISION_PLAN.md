@@ -171,3 +171,10 @@ The older `PROJECT_TASKS.md` records the previous system. Its completed entries 
 - [x] Save unmatched submissions for accountable review; retain checkpoint, geofence, duplicate and device checks.
 - [x] Show self-declared details in review and report outputs without treating them as an official roster or inventing an attendance denominator.
 - [x] Validate an empty installation and rollback fixtures for no-list submissions, duplicate/replay, geofence rejection, reporting and official-roster compatibility.
+
+## Rejected attendance evidence (2026-11-27)
+
+- [x] Clear outside-venue guidance with detected distance, allowed radius, GPS accuracy and remaining attempts.
+- [x] Save immutable distance/venue snapshots and browser/notice details on request records; preserve original receipts on retries. Existing coordinate records remain; historical unknown distances are not reconstructed.
+- [x] Show matching rejected attempts to assigned case reviewers; provide administrator-only paginated school-ID search from the static QR page, including unsuccessful-only participants. Claims remain unverified and GPS rejection is not proof of malicious activity.
+- [x] Update privacy notice and validate rollback fixtures for evidence, authorization, replay and successful resubmission.

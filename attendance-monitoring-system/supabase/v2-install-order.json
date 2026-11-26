@@ -29,7 +29,8 @@
     "20261126081453_attendance_review_queue.sql",
     "20261126084411_account_lifecycle_and_audit_trail.sql",
     "20261126093828_revision_report_snapshots.sql",
-    "20261126172154_self_declared_attendance_without_rosters.sql"
+    "20261126172154_self_declared_attendance_without_rosters.sql",
+    "20261126180538_attendance_location_attempt_evidence.sql"
   ],
   "managed_addons": [
     "20261126160756_v2_scheduled_review_worker.sql"
