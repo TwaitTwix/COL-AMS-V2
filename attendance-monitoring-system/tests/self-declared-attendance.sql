@@ -1,0 +1,46 @@
+begin;
+do $$
+declare root uuid:=gen_random_uuid();event uuid:=gen_random_uuid();token uuid;request uuid:=gen_random_uuid();s public.public_attendance_submissions;c public.courses;result jsonb;again jsonb;job jsonb;official_event uuid:=gen_random_uuid();section uuid;preview jsonb;
+ sig jsonb:='[[[0.1,0.1],[0.2,0.2],[0.3,0.1],[0.4,0.2],[0.5,0.1],[0.6,0.2],[0.7,0.1],[0.8,0.2]]]';
+begin
+ insert into auth.users(id,email,email_confirmed_at) values(root,'leonardolllmacalinaoisap@gmail.com',now());
+ insert into public.user_profiles(user_id,email,full_name,role,approval_status) values(root,'leonardolllmacalinaoisap@gmail.com','Synthetic owner','main_admin','approved');
+ perform set_config('role','service_role',true);perform public.bootstrap_operational_administrator(root);
+ select * into strict c from public.courses where institution='ISAP' and active order by name limit 1;
+ insert into public.events(id,name,institution,latitude,longitude,radius_meters,starts_at,ends_at) values(event,'No-list attendance fixture','ISAP',17,121,100,now()+interval '2 days',now()+interval '3 days');
+ result:=public.save_event_public_link(root,event,0,true,false,'','No official list; allow student details');token:=(result->>'token')::uuid;
+ if token is null or not exists(select 1 from public.event_eligibility_heads where event_id=event) or exists(select 1 from public.event_eligibility_heads h join public.event_eligibility_rosters r on r.eligibility_id=h.eligibility_id where h.event_id=event) then raise exception 'FAIL: no-list publishing';end if;
+ if public.get_public_event_attendance(token)->>'class_list_available'<>'false' then raise exception 'FAIL: misleading public roster metadata';end if;
+ update public.events set starts_at=now()-interval '1 minute',ends_at=now()+interval '1 hour' where id=event;
+ result:=public.submit_public_attendance_details(token,gen_random_uuid(),repeat('a',64),repeat('b',64),'Synthetic browser',repeat('c',64),'SELF-001','Synthetic Participant','ISAP','','','','default',17,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v2',true);
+ if result->>'status_code'<>'400' or result->'body'->'error'->>'code'<>'invalid_class_details' then raise exception 'FAIL: missing self-declared details';end if;
+ result:=public.submit_public_attendance_details(token,request,repeat('a',64),repeat('b',64),'Synthetic browser',repeat('c',64),'SELF-001','Synthetic Participant','ISAP','TEST 1A',c.college,c.name,'default',17,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v2',true);
+ if result->>'status_code'<>'202' then raise exception 'FAIL: no-list attendance not saved: %',result;end if;
+ select * into strict s from public.public_attendance_submissions where event_id=event and school_id='SELF-001';
+ if s.student_id is not null or s.status<>'pending_review' or s.class_label<>'TEST 1A' or s.declared_college<>c.college or s.declared_course<>c.name or s.privacy_version<>'2026-11-27-attendance-v2' then raise exception 'FAIL: self-declared identity provenance';end if;
+ if not exists(select 1 from public.attendance_review_cases where submission_id=s.id and owner_id=root and state='open') then raise exception 'FAIL: missing assigned review';end if;
+ if exists(select 1 from public.participant_device_bindings) then raise exception 'FAIL: unverified claim captured a device binding';end if;
+ again:=public.submit_public_attendance_details(token,request,repeat('a',64),repeat('b',64),'Synthetic browser',repeat('c',64),'SELF-001','Synthetic Participant','ISAP','TEST 1A',c.college,c.name,'default',17,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v2',true);
+ if again->'body'->>'receipt_id'<>result->'body'->>'receipt_id' then raise exception 'FAIL: request replay';end if;
+ result:=public.submit_public_attendance_details(token,gen_random_uuid(),repeat('d',64),repeat('e',64),'Another browser',repeat('f',64),'SELF-001','Synthetic Participant','ISAP','TEST 1A',c.college,c.name,'default',17,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v2',true);
+ if result->>'status_code'<>'409' or (select count(*) from public.public_attendance_submissions where event_id=event)<>1 then raise exception 'FAIL: duplicate slot';end if;
+ result:=public.submit_public_attendance_details(token,gen_random_uuid(),repeat('a',64),repeat('b',64),'Synthetic browser',repeat('d',64),'SELF-002','Outside Participant','ISAP','TEST 1A',c.college,c.name,'default',18,121,5,clock_timestamp(),sig,'2026-11-27-attendance-v2',true);
+ if result->>'status_code'<>'400' or result->'body'->'error'->>'code'<>'outside_geofence' then raise exception 'FAIL: no-list geofence guard %',result;end if;
+ job:=public.create_operational_report(root,gen_random_uuid(),event,'preview',false);
+ result:=public.get_operational_report(root,(job->>'job_id')::uuid);
+ if result->'items'->0->>'college'<>c.college or result->'items'->0->>'course'<>c.name or result->'items'->0->>'affiliation_source'<>'Self-declared' or result->'summary'->'totals'->>'eligible_checkpoint_slots'<>'0' then raise exception 'FAIL: report self-declared details / denominator';end if;
+ if result->'summary'->'totals'->>'pending_review'<>'1' then raise exception 'FAIL: pending attendance summary';end if;
+ preview:=public.save_class_section(root,null,0,jsonb_build_object('institution','ISAP','college',c.college,'course',c.name,'name','Official list fixture','academic_year','2026-2027','term','Test'),'Official roster compatibility');section:=(preview->>'id')::uuid;
+ preview:=public.preview_class_roster(root,section,jsonb_build_array(jsonb_build_object('row_number',2,'school_id','LISTED-001','full_name','Listed Participant')),'test.xlsx','merge');perform public.commit_class_roster(root,(preview->>'id')::uuid,false,false,'Official roster compatibility');
+ insert into public.events(id,name,institution,latitude,longitude,radius_meters,starts_at,ends_at) values(official_event,'Official roster compatibility','ISAP',17,121,100,now()+interval '2 days',now()+interval '3 days');
+ perform public.set_event_class_rosters(root,official_event,0,jsonb_build_array(section),'Official event eligibility');
+ result:=public.save_event_public_link(root,official_event,0,true,false,'','Official roster compatibility');token:=(result->>'token')::uuid;
+ if public.get_public_event_attendance(token)->>'class_list_available'<>'true' then raise exception 'FAIL: official roster metadata';end if;
+ update public.events set starts_at=now()-interval '1 minute',ends_at=now()+interval '1 hour' where id=official_event;
+ result:=public.submit_public_attendance_details(token,gen_random_uuid(),repeat('e',64),repeat('b',64),'Listed browser',repeat('a',64),'LISTED-001','Listed Participant','ISAP','Official class','','','default',17,121,5,clock_timestamp(),sig,'2026-11-26-attendance-v1',true);
+ if (result->>'status_code')::int not in (200,202) then raise exception 'FAIL: older listed-client compatibility %',result;end if;
+ select * into strict s from public.public_attendance_submissions where event_id=official_event;
+ if s.student_id is null or 'not_on_official_list'=any(s.review_reasons) or s.privacy_version<>'2026-11-26-attendance-v1' then raise exception 'FAIL: official list matching changed';end if;
+
+end $$;
+rollback;

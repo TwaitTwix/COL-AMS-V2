@@ -163,3 +163,11 @@ Acceptance gate: all earlier gates pass, policy decisions are resolved, source a
 | 2026-11-26 | Phase 8 reports and local rehearsal implemented; release remains in progress | Node 68 passed/8 skipped; SQL 19/19; 14 concurrency checks; synthetic report/PDF QA. No hosted mutations | Complete DOCX visual rendering, hosted Auth/Storage/scheduler tests, physical-phone acceptance and retention confirmation before controlled cutover |
 
 The older `PROJECT_TASKS.md` records the previous system. Its completed entries are historical and do not mean this revision is implemented.
+
+## Clarification implemented: optional official class lists (2026-11-27)
+
+- [x] Allow stable QR publishing without uploaded class lists, preserving an immutable empty eligibility snapshot.
+- [x] Collect institution, college/department, program/course and class/section on the public attendance form.
+- [x] Save unmatched submissions for accountable review; retain checkpoint, geofence, duplicate and device checks.
+- [x] Show self-declared details in review and report outputs without treating them as an official roster or inventing an attendance denominator.
+- [x] Validate an empty installation and rollback fixtures for no-list submissions, duplicate/replay, geofence rejection, reporting and official-roster compatibility.

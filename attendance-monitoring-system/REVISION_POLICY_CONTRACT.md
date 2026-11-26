@@ -23,7 +23,7 @@ The detailed defaults below make the confirmed rules implementable. Record later
 
 ## Identity, classes, and rosters
 
-1. A participant is a roster identity, separate from a login account. Operational account holders may also have roster identities and use the same public attendance flow.
+1. A participant is an attendance identity, separate from a login account; an official roster is optional. Operational account holders may also have roster identities and use the same public attendance flow.
 2. Store the school ID as text. Trim outer whitespace and normalize letter case for uniqueness; preserve leading zeroes, internal punctuation, and original display value. Do not guess that two differently punctuated IDs are the same person. A name is not an identity key.
 3. Existing school-ID duplicates/collisions must be reported before migration. Never merge identities automatically. Correcting an ID after attendance exists requires an administrator-controlled, audited correction preserving the original identity references.
 4. A section belongs to an institution, college, course, academic year, and term. Representative assignment is exclusive per section for its active term; replacing a representative ends the old assignment and retains history. Database constraints must prevent two concurrent active assignments.
@@ -74,7 +74,7 @@ The live snapshot has one main administrator, three COL officers, two student of
 ## Event form, geofence, duplicate, and retry policy
 
 1. Each stable QR resolves to the public event page without login. Possession of the link is not evidence of physical presence. Event closure/disable must block submission even when a printed QR remains available.
-2. Required form evidence: name, normalized school ID, touch signature, versioned privacy notice acceptance, and fresh location evidence. Institution/class may be requested to resolve eligibility, without exposing the full class list publicly.
+2. Required form evidence: name, normalized school ID, touch signature, versioned privacy notice acceptance, and fresh location evidence. The public form also collects institution, college/department, program/course and class/section without exposing official class lists. Events may publish a stable attendance QR without any uploaded list; valid unmatched submissions are saved in the exception queue for review, not blocked.
 3. Server time determines the active checkpoint. Non-overlapping checkpoint windows remain supported; a checkpoint key is immutable after submissions. Unique attendance is `(participant identity, event, checkpoint)`; pending/approved records reserve that slot. Multiple HTTP requests must never create multiple accepted records.
 4. Rejected submissions and attempts remain evidence, not extra attendance rows. Retry/appeal references the same slot and follows the event's configured attempt policy; network retries reuse an idempotency identifier and do not consume extra attempts or penalties.
 5. Retain existing per-checkpoint attempt limits (default three) unless explicitly revised. A missing-roster/device-review submission is pending, not a rejected attempt. Attempts for unauthenticated claims must not become a way to lock out another student's ID without rate-limit/review recovery.

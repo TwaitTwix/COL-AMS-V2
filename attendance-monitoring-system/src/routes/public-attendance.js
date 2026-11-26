@@ -37,7 +37,7 @@ export function createPublicAttendanceRouter({client=supabase,mode=env.ACCESS_MO
   const prior=await call('public_attendance_receipt',{p_token:req.params.token,p_request:input.request_id,p_device:device,p_payload_hash:hash});
   if(prior)return deliver(res,prior);
   verifyAttendanceFormToken({value:input.form_token,token:req.params.token,device,secret});
-  const result=await call('submit_public_attendance',{p_token:req.params.token,p_request:input.request_id,p_device:device,p_ip:attendanceIpHash(req.ip||'unknown',secret),p_agent:(req.get('user-agent')||'Unknown browser').slice(0,500),p_hash:hash,p_school_id:input.school_id,p_name:input.full_name,p_institution:input.institution,p_class:input.class_label,p_checkpoint:input.checkpoint_key,p_lat:input.latitude,p_lon:input.longitude,p_accuracy:input.accuracy,p_captured:input.location_captured_at,p_signature:input.signature,p_privacy_version:input.privacy_version,p_consent:true});
+  const result=await call('submit_public_attendance_details',{p_token:req.params.token,p_request:input.request_id,p_device:device,p_ip:attendanceIpHash(req.ip||'unknown',secret),p_agent:(req.get('user-agent')||'Unknown browser').slice(0,500),p_hash:hash,p_school_id:input.school_id,p_name:input.full_name,p_institution:input.institution,p_class:input.class_label,p_college:input.college||'',p_course:input.course||'',p_checkpoint:input.checkpoint_key,p_lat:input.latitude,p_lon:input.longitude,p_accuracy:input.accuracy,p_captured:input.location_captured_at,p_signature:input.signature,p_privacy_version:input.privacy_version,p_consent:true});
   deliver(res,result);
  }));
  return router;

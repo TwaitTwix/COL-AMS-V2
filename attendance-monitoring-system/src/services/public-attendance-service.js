@@ -22,6 +22,6 @@ export function attendancePayloadHash(token,input){
 }
 export function attendanceIpHash(ip,secret){return createHmac('sha256',requireAttendanceSecret(secret)).update('public-attendance-ip:'+ip).digest('hex');}
 export function publicEventFields(data){
- return {name:data.name,institution:data.institution,starts_at:data.starts_at,ends_at:data.ends_at,server_time:data.server_time,max_attempts:data.max_attempts,active_checkpoint_key:data.active_checkpoint_key,
+ return {name:data.name,institution:data.institution,college:data.college,class_list_available:data.class_list_available===true,starts_at:data.starts_at,ends_at:data.ends_at,server_time:data.server_time,max_attempts:data.max_attempts,active_checkpoint_key:data.active_checkpoint_key,
  checkpoints:(data.checkpoints||[]).map(c=>({key:c.key,label:c.label,opens_at:c.opens_at,closes_at:c.closes_at}))};
 }
