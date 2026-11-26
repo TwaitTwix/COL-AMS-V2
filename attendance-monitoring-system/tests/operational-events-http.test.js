@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import express from 'express';
+import {randomUUID} from 'node:crypto';
+import {createOperationalEventRouter} from '../src/routes/operational-events.js';
+import {errorHandler} from '../src/middleware/error-handler.js';
+test('event and link operations use verified actors, validate input, and enforce capabilities and database scope',async t=>{
+ const actor=randomUUID(),event=randomUUID(),outside=randomUUID(),token=randomUUID(),calls=[];let enabled=true;
+ const client={rpc:async(name,args)=>{calls.push({name,args});if(args.p_event===outside)return{error:{code:'42501',message:'Event is outside your access'}};return{data:name==='get_event_public_link'?{token,version:1,enabled:false}:name==='get_operational_event'?{id:event}:{id:event}};}};
+ const app=express();app.use(express.json());app.use((req,_res,next)=>{req.authUser={id:actor};req.operationalAccess={enabled:true,role:'col_admin',features:[{key:'events.manage',effective:enabled}]};next();});app.use(createOperationalEventRouter({client,appUrl:'https://school.test'}));app.use(errorHandler);const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));t.after(()=>new Promise(r=>server.close(r)));const base='http://127.0.0.1:'+server.address().port;
+ const send=(path,body,method='PUT')=>fetch(base+path,{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+ const fields={name:'Synthetic event',latitude:17,longitude:121,radius_meters:100,starts_at:'2026-11-27T09:00:00+08:00',ends_at:'2026-11-27T12:00:00+08:00',institution:'ISAP'};
+ assert.equal((await send('/events',{event:fields,version:0,reason:'Create fixture'},'POST')).status,201);
+ assert.equal(calls.at(-1).args.p_actor,actor);assert.equal(calls.at(-1).args.p_fields.max_check_in_attempts,3);
+ assert.equal((await send('/events/'+event,{event:{...fields,max_check_in_attempts:21},version:1,reason:'Invalid cap'})).status,400);
+ assert.equal((await send('/events/'+event+'/public-link',{version:1,enabled:true,reason:'Publish fixture',p_actor:outside})).status,400);
+ assert.equal((await send('/events/'+outside+'/public-link',{version:1,enabled:true,reason:'Outside scope'})).status,403);
+ const link=await (await fetch(base+'/events/'+event+'/public-link')).json();assert.equal(link.link.url,'https://school.test/attend/'+token);
+ enabled=false;const before=calls.length;assert.equal((await send('/events/'+event,{event:fields,version:1,reason:'Revoked permission'})).status,403);assert.equal(calls.length,before);
+});

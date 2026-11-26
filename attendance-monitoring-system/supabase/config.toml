@@ -1,0 +1,5 @@
+# Only declared settings are pushed; existing URLs, providers and mail settings
+# are left unchanged. Preview with: supabase config diff.
+[auth]
+minimum_password_length = 10
+password_requirements = "lower_upper_letters_digits_symbols"

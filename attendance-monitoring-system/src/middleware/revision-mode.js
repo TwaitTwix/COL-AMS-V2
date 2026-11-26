@@ -1,0 +1,2 @@
+export const legacyApiGate=mode=>(_req,res,next)=>mode==='revision'?res.status(403).set('Cache-Control','no-store').json({error:{message:'This legacy feature is unavailable in the revised workspace.',details:[]}}):next();
+export const registrationGate=mode=>(_req,res,next)=>mode==='revision'?res.status(403).set('Cache-Control','no-store').json({error:{message:'Public registration is closed. Attendance participants do not need an account. Contact an administrator for operational access.',details:[]}}):next();

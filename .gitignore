@@ -1,0 +1,18 @@
+# Dependencies and local runtime files
+node_modules/
+.env
+.env.*
+!.env.example
+.demo-credentials.json
+.local-preview/
+coverage/
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.vscode/
+.codex/
+.agents/
+.aws/
+**/supabase/.temp/
+.vercel/

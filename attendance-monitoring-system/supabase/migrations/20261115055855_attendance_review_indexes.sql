@@ -1,0 +1,10 @@
+create index admin_notifications_attendance_idx on public.admin_notifications(attendance_id);
+create index admin_notifications_incident_idx on public.admin_notifications(incident_id);
+create index admin_notifications_user_idx on public.admin_notifications(user_id);
+create index attendance_logs_reviewed_by_idx on public.attendance_logs(reviewed_by);
+create index attendance_logs_user_id_idx on public.attendance_logs(user_id);
+create index device_incidents_reviewed_by_idx on public.device_incidents(reviewed_by);
+create index report_jobs_event_id_idx on public.report_jobs(event_id);
+create index user_profiles_reviewed_by_idx on public.user_profiles(reviewed_by);
+create index attendance_logs_pending_review_idx on public.attendance_logs(checked_in_at desc) where status='pending_review';
+create index students_affiliation_idx on public.students(institution,college) where archived_at is null;

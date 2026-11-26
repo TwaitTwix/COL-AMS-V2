@@ -1,0 +1,10 @@
+export async function confirmEmailRelease({student,user,email,send,announce,onDone}){
+  const dialog=document.createElement('dialog');dialog.className='review-details';dialog.setAttribute('aria-labelledby','release-email-title');
+  dialog.innerHTML='<form><h2 id="release-email-title">Release email for a new registration?</h2><p data-email></p><p>This permanently retires the old login. It cannot be restored. Attendance, device logs, and audit history remain. The email can register a new account that must verify its email and receive administrator approval.</p><p>To reuse the same personal ID, restore the archived student record before approving the new registration. This preserves its existing attendance history.</p><label class="admin-field">REASON<textarea name="reason" minlength="3" maxlength="1000" required rows="3"></textarea></label><label class="admin-field">TYPE RELEASE TO CONFIRM<input name="confirm" required pattern="RELEASE" autocomplete="off"></label><p role="status" data-release-message></p><div class="row-actions"><button type="button" class="secondary-button" data-cancel-release>Cancel</button><button type="submit" class="primary-button">Retire login and release email</button></div></form>';
+  dialog.querySelector('[data-email]').textContent=email;document.body.append(dialog);dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.querySelector('[data-cancel-release]').onclick=()=>dialog.close();
+  dialog.querySelector('form').onsubmit=async event=>{
+    event.preventDefault();const form=event.currentTarget,buttons=[...dialog.querySelectorAll('button')];buttons.forEach(b=>b.disabled=true);
+    try{const result=await send(`/api/admin/students/${encodeURIComponent(student)}/release-email`,{user_id:user,email,reason:form.elements.reason.value.trim(),confirm:form.elements.confirm.value});dialog.close();announce(result.message);await onDone();}
+    catch(e){dialog.querySelector('[data-release-message]').textContent=e.message;buttons.forEach(b=>b.disabled=false);}
+  };dialog.showModal();
+}

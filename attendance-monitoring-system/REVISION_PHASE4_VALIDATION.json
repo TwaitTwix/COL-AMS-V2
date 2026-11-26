@@ -1,0 +1,126 @@
+{
+  "date": "2026-11-26T07:11:48.456871+08:00",
+  "database": "isolated PostgreSQL 18 with minimal Auth/Storage stubs",
+  "migration": "20261125230133_public_device_binding.sql",
+  "migrations": [
+    "20261125171730_operational_access_foundation.sql",
+    "20261125174653_class_rosters_and_assignments.sql",
+    "20261125183053_public_event_attendance.sql",
+    "20261125230133_public_device_binding.sql"
+  ],
+  "automatic_account_migration": false,
+  "rollback_fixtures": [
+    {
+      "file": "academic-catalog.sql",
+      "passed": true
+    },
+    {
+      "file": "activity-logs.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-attempts.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-device-baseline.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-workflow.sql",
+      "passed": true
+    },
+    {
+      "file": "bulk-review.sql",
+      "passed": true
+    },
+    {
+      "file": "checkpoints.sql",
+      "passed": true
+    },
+    {
+      "file": "class-rosters.sql",
+      "passed": true
+    },
+    {
+      "file": "email-release.sql",
+      "passed": true
+    },
+    {
+      "file": "manual-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "operational-access.sql",
+      "passed": true
+    },
+    {
+      "file": "participant-devices.sql",
+      "passed": true
+    },
+    {
+      "file": "public-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "review-center.sql",
+      "passed": true
+    },
+    {
+      "file": "single-active-session.sql",
+      "passed": true
+    },
+    {
+      "file": "student-directory.sql",
+      "passed": true
+    }
+  ],
+  "concurrent_last_administrator_guard_passed": true,
+  "concurrent_representative_guard_passed": true,
+  "concurrent_identity_guard_passed": true,
+  "concurrent_public_attendance_slot_guard_passed": true,
+  "concurrent_public_request_replay_passed": true,
+  "concurrent_first_device_binding_guard_passed": true,
+  "concurrent_shared_browser_guard_passed": true,
+  "new_tables_missing_rls": 0,
+  "new_security_definer_functions": 0,
+  "full_supabase_platform_tested": false,
+  "phase": 4,
+  "node_tests": {
+    "total": 64,
+    "passed": 56,
+    "skipped": 8,
+    "failed": 0,
+    "command": "npm test",
+    "live_tests_enabled": false
+  },
+  "ui": {
+    "synthetic_data_only": true,
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "desktop_viewport": [
+      1280,
+      900
+    ],
+    "no_page_horizontal_overflow": true,
+    "evidence_table_scrolls_internally": true,
+    "explicit_replacement_confirmation_and_history": true,
+    "attendance_not_approved_by_device_decision": true,
+    "real_gps_permission_used": false,
+    "physical_phones_tested": false
+  },
+  "attendance_status": "pending_review",
+  "device_binding_implemented": true,
+  "penalty_ledger_separate_from_legacy": true,
+  "review_access": "enabled administrator only; lower-role case ownership follows in phase 5",
+  "notifications_or_escalation_enabled": false,
+  "hosted_changes": false,
+  "real_penalties_applied": false,
+  "real_accounts_changed": false,
+  "deployment_performed": false,
+  "emails_sent": false,
+  "privacy_retention_period_confirmed": false,
+  "next_phase": "5: review ownership, notifications and automatic one-hour escalation"
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "express",
+  "regions": ["sin1"],
+  "functions": {
+    "src/app.js": {
+      "maxDuration": 300,
+      "includeFiles": "{public/index.html,src/workers/**,src/utils/report-role.js,node_modules/**}"
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [{ "key": "Cache-Control", "value": "no-store" }]
+    }
+  ]
+}

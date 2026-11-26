@@ -1,0 +1,13 @@
+.git
+.vscode
+node_modules
+**/node_modules
+.env
+.env.*
+**/.env
+**/.env.*
+**/.demo-credentials.json
+**/.local-preview
+**/supabase/.temp
+**/tests
+**/COL_logo

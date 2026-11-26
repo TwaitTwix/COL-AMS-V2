@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import express from 'express';
+import {randomUUID} from 'node:crypto';
+import {createAccountAuditRouter} from '../src/routes/account-audit.js';
+import {errorHandler} from '../src/middleware/error-handler.js';
+test('lifecycle and audit APIs use verified actors, reject privilege/evidence injection and respect access failures',async t=>{
+ const actor=randomUUID(),user=randomUUID(),student=randomUUID(),calls=[];let enabled=true,denied=false;
+ const client={rpc:async(name,args)=>{calls.push({name,args});return denied?{error:{code:'42501',message:'Outside your audit access'}}:{data:name==='get_account_lifecycle'?{user_id:user,enabled:true}:{items:[],total:0}};}};
+ const app=express();app.use(express.json());app.use((req,_res,next)=>{req.authUser={id:actor};req.operationalAccess={enabled:true,role:'administrator',features:['accounts.manage','audit.view'].map(key=>({key,effective:enabled}))};next();});app.use(createAccountAuditRouter({client}));app.use(errorHandler);const server=app.listen(0,'127.0.0.1');await new Promise(r=>server.once('listening',r));t.after(()=>new Promise(r=>server.close(r)));const base='http://127.0.0.1:'+server.address().port;
+ const send=(path,data)=>fetch(base+path,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+ const lifecycle={account_version:1,lifecycle_version:0,enabled:false,reason:'Explicit account deactivation',confirm:true};
+ for(const change of [{role:'administrator'},{scopes:[]},{p_actor:user},{email:'replacement@test.invalid'},{confirm:false}])assert.equal((await send('/accounts/'+user+'/lifecycle',{...lifecycle,...change})).status,400);
+ assert.equal((await send('/accounts/'+user+'/lifecycle',lifecycle)).status,200);assert.deepEqual(calls.at(-1),{name:'set_account_lifecycle',args:{p_actor:actor,p_user:user,p_account_version:1,p_lifecycle_version:0,p_enabled:false,p_reason:lifecycle.reason,p_confirm:true}});
+ assert.equal((await send('/student-records/'+student+'/archive',{version:1,archived:true,reason:'Archive participant only',confirm:true})).status,200);assert.equal(calls.at(-1).args.p_actor,actor);
+ assert.equal((await fetch(base+'/audit/timeline?kind=participant&key=claim%3ATEST-00001&include_sensitive=true')).status,400);
+ assert.equal((await fetch(base+'/audit/groups?kind=account&page=0')).status,400);
+ assert.equal((await fetch(base+'/student-records?archived=true&search=Test')).status,200);assert.equal(calls.at(-1).args.p_archived,true);
+ denied=true;assert.equal((await fetch(base+'/audit/timeline?kind=account&key='+user)).status,403);enabled=false;const before=calls.length;assert.equal((await send('/accounts/'+user+'/lifecycle',lifecycle)).status,403);assert.equal(calls.length,before);
+ assert.equal(calls.some(c=>/email_release|delete_user|finish_archived/.test(c.name)),false);
+});

@@ -1,0 +1,137 @@
+{
+  "date": "2026-11-26T16:37:32.175650+08:00",
+  "database": "isolated PostgreSQL 18 with minimal Auth/Storage stubs",
+  "migration": "20261126081453_attendance_review_queue.sql",
+  "migrations": [
+    "20261125171730_operational_access_foundation.sql",
+    "20261125174653_class_rosters_and_assignments.sql",
+    "20261125183053_public_event_attendance.sql",
+    "20261125230133_public_device_binding.sql",
+    "20261126081453_attendance_review_queue.sql"
+  ],
+  "automatic_account_migration": false,
+  "rollback_fixtures": [
+    {
+      "file": "academic-catalog.sql",
+      "passed": true
+    },
+    {
+      "file": "activity-logs.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-attempts.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-device-baseline.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-review-queue.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-workflow.sql",
+      "passed": true
+    },
+    {
+      "file": "bulk-review.sql",
+      "passed": true
+    },
+    {
+      "file": "checkpoints.sql",
+      "passed": true
+    },
+    {
+      "file": "class-rosters.sql",
+      "passed": true
+    },
+    {
+      "file": "email-release.sql",
+      "passed": true
+    },
+    {
+      "file": "manual-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "operational-access.sql",
+      "passed": true
+    },
+    {
+      "file": "participant-devices.sql",
+      "passed": true
+    },
+    {
+      "file": "public-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "review-center.sql",
+      "passed": true
+    },
+    {
+      "file": "single-active-session.sql",
+      "passed": true
+    },
+    {
+      "file": "student-directory.sql",
+      "passed": true
+    }
+  ],
+  "concurrent_last_administrator_guard_passed": true,
+  "concurrent_representative_guard_passed": true,
+  "concurrent_identity_guard_passed": true,
+  "concurrent_public_attendance_slot_guard_passed": true,
+  "concurrent_public_request_replay_passed": true,
+  "concurrent_first_device_binding_guard_passed": true,
+  "concurrent_shared_browser_guard_passed": true,
+  "concurrent_review_decision_guard_passed": true,
+  "concurrent_worker_decision_guard_passed": true,
+  "concurrent_worker_notification_guard_passed": true,
+  "new_tables_missing_rls": 0,
+  "new_security_definer_functions": 0,
+  "full_supabase_platform_tested": false,
+  "phase": 5,
+  "node_tests": {
+    "total": 66,
+    "passed": 58,
+    "skipped": 8,
+    "failed": 0,
+    "command": "npm test",
+    "live_tests_enabled": false
+  },
+  "ui": {
+    "synthetic_data_only": true,
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "desktop_viewport": [
+      1280,
+      900
+    ],
+    "no_horizontal_overflow": true,
+    "review_case_evidence_and_explicit_approval": true,
+    "clickable_review_pages_and_filters": true,
+    "manual_frozen_roster_search_and_pending_submission": true,
+    "notification_history_and_operational_header_bell": true,
+    "real_gps_permission_used": false,
+    "physical_phones_tested": false
+  },
+  "review_permissions": "Current role/capability/scope and case owner; global administrator evidence oversight; device and identity exceptions require separate handling",
+  "durable_deadlines_implemented": true,
+  "hosted_scheduler_activated": false,
+  "scheduler_target_interval_seconds": 60,
+  "notifications": "in-app only; local fixture/UI verification",
+  "manual_evidence_provenance_verified": true,
+  "bulk_approval_atomic_and_unflagged_only": true,
+  "hosted_changes": false,
+  "real_attendance_decisions": false,
+  "emails_sent": false,
+  "real_accounts_changed": false,
+  "deployment_performed": false,
+  "privacy_retention_period_confirmed": false,
+  "next_phase": "6: reversible account deactivation and grouped Audit Trail"
+}

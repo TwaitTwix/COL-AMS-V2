@@ -1,0 +1,45 @@
+{
+  "phase": 7,
+  "date": "2026-11-26",
+  "status": "locally_complete",
+  "production_changed": false,
+  "schema_changes": false,
+  "node": {
+    "total": 70,
+    "passed": 62,
+    "skipped": 8,
+    "failed": 0
+  },
+  "browser": {
+    "data": "synthetic_loopback_only",
+    "viewports": [
+      "320x700",
+      "390x844",
+      "1280x900"
+    ],
+    "checks": [
+      "no_horizontal_overflow",
+      "48px_header_targets",
+      "keyboard_wrap",
+      "escape_and_backdrop",
+      "close_on_navigation",
+      "main_focus",
+      "permitted_refresh_back",
+      "representative_admin_menus",
+      "light_dark",
+      "unavailable_counts",
+      "sign_out_controls",
+      "logo_dashboard"
+    ],
+    "screenshots": [
+      ".local-preview/navigation-mobile.png",
+      ".local-preview/navigation-desktop.png"
+    ],
+    "limitations": [
+      "Synthetic account fixture lacks profile role; no password submission or real Auth test",
+      "Physical phone and hosted staging remain release gates"
+    ]
+  },
+  "sql": "No SQL changes; prior phase results not rerun",
+  "next_phase": 8
+}

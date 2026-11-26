@@ -1,0 +1,120 @@
+{
+  "date": "2026-11-26T02:55:02.852434+08:00",
+  "database": "isolated PostgreSQL 18 with minimal Auth/Storage stubs",
+  "migration": "20261125183053_public_event_attendance.sql",
+  "migrations": [
+    "20261125171730_operational_access_foundation.sql",
+    "20261125174653_class_rosters_and_assignments.sql",
+    "20261125183053_public_event_attendance.sql"
+  ],
+  "automatic_account_migration": false,
+  "rollback_fixtures": [
+    {
+      "file": "academic-catalog.sql",
+      "passed": true
+    },
+    {
+      "file": "activity-logs.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-attempts.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-device-baseline.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-workflow.sql",
+      "passed": true
+    },
+    {
+      "file": "bulk-review.sql",
+      "passed": true
+    },
+    {
+      "file": "checkpoints.sql",
+      "passed": true
+    },
+    {
+      "file": "class-rosters.sql",
+      "passed": true
+    },
+    {
+      "file": "email-release.sql",
+      "passed": true
+    },
+    {
+      "file": "manual-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "operational-access.sql",
+      "passed": true
+    },
+    {
+      "file": "public-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "review-center.sql",
+      "passed": true
+    },
+    {
+      "file": "single-active-session.sql",
+      "passed": true
+    },
+    {
+      "file": "student-directory.sql",
+      "passed": true
+    }
+  ],
+  "concurrent_last_administrator_guard_passed": true,
+  "concurrent_representative_guard_passed": true,
+  "concurrent_identity_guard_passed": true,
+  "concurrent_public_attendance_slot_guard_passed": true,
+  "concurrent_public_request_replay_passed": true,
+  "new_tables_missing_rls": 0,
+  "new_security_definer_functions": 0,
+  "full_supabase_platform_tested": false,
+  "phase": 3,
+  "node_tests": {
+    "total": 63,
+    "passed": 55,
+    "skipped": 8,
+    "failed": 0,
+    "command": "npm test",
+    "live_tests_enabled": false
+  },
+  "ui": {
+    "synthetic_data_only": true,
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "desktop_viewport": [
+      1280,
+      900
+    ],
+    "no_horizontal_overflow": true,
+    "input_font_px": 17,
+    "button_min_height_px": 52,
+    "pointer_signature_and_clear": true,
+    "interrupted_request_retry_to_pending": true,
+    "four_checkpoint_editor": true,
+    "static_qr_publish_keeps_url": true,
+    "real_gps_permission_used": false,
+    "physical_phones_tested": false,
+    "qr_download_end_to_end_verified": false,
+    "qr_download_limit": "Browser automation timed out waiting for the download event. QR display and publishing were verified; normal-browser PNG download remains a release check."
+  },
+  "new_submission_status": "pending_review",
+  "device_binding_implemented": false,
+  "hosted_changes": false,
+  "deployment_performed": false,
+  "emails_sent": false,
+  "real_accounts_changed": false,
+  "privacy_retention_period_confirmed": false,
+  "next_phase": "4: device binding and suspicious-attendance evidence"
+}

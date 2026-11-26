@@ -1,0 +1,82 @@
+{
+  "date": "2026-11-26T01:40:26.457842+08:00",
+  "database": "isolated PostgreSQL 18 with minimal Auth/Storage stubs",
+  "migration": "20261125171730_operational_access_foundation.sql",
+  "automatic_account_migration": false,
+  "rollback_fixtures": [
+    {
+      "file": "academic-catalog.sql",
+      "passed": true
+    },
+    {
+      "file": "activity-logs.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-attempts.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-device-baseline.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-workflow.sql",
+      "passed": true
+    },
+    {
+      "file": "bulk-review.sql",
+      "passed": true
+    },
+    {
+      "file": "checkpoints.sql",
+      "passed": true
+    },
+    {
+      "file": "email-release.sql",
+      "passed": true
+    },
+    {
+      "file": "manual-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "operational-access.sql",
+      "passed": true
+    },
+    {
+      "file": "review-center.sql",
+      "passed": true
+    },
+    {
+      "file": "single-active-session.sql",
+      "passed": true
+    },
+    {
+      "file": "student-directory.sql",
+      "passed": true
+    }
+  ],
+  "concurrent_last_administrator_guard_passed": true,
+  "new_tables_missing_rls": 0,
+  "new_security_definer_functions": 0,
+  "full_supabase_platform_tested": false,
+  "node_tests": {
+    "discovered": 44,
+    "passed": 36,
+    "failed": 0,
+    "skipped": 8
+  },
+  "mobile_preview": {
+    "synthetic_data_only": true,
+    "viewport": [
+      390,
+      844
+    ],
+    "form_font_px": 16,
+    "input_height_px": 50,
+    "horizontal_overflow": false,
+    "pagination_and_search_checked": true
+  },
+  "migration_sha256": "55be189cdd20841cbc202330e0a05980ad87dac477462f1fab483d9dbe8cd642"
+}

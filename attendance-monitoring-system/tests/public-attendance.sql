@@ -1,0 +1,58 @@
+begin;
+create function pg_temp.submit_fixture(token uuid,school text,request_id uuid default gen_random_uuid(),latitude double precision default 17,longitude double precision default 121,accuracy double precision default 5,captured timestamptz default clock_timestamp(),checkpoint text default 'first',browser text default repeat('a',64),name text default 'Participant One',payload text default repeat('c',64)) returns jsonb language sql as $$
+ select public.submit_public_attendance(token,request_id,browser,repeat('b',64),'Synthetic browser',payload,school,name,'ISAP','Class A',checkpoint,latitude,longitude,accuracy,captured,'[[[0.1,0.1],[0.2,0.2],[0.3,0.1],[0.4,0.2],[0.5,0.1],[0.6,0.2],[0.7,0.1],[0.8,0.2]]]','2026-11-26-attendance-v1',true);
+$$;
+grant execute on function pg_temp.submit_fixture to service_role;
+do $$
+declare root uuid;staff uuid:=gen_random_uuid();e uuid:=gen_random_uuid();empty_event uuid:=gen_random_uuid();section uuid;course_row public.courses;r jsonb;p jsonb;link jsonb;token uuid;old_token uuid;request_id uuid:=gen_random_uuid();submission uuid;count_students integer;count_users integer;id1 text:='PA-'||left(replace(gen_random_uuid()::text,'-',''),12);i integer;points jsonb;
+begin
+ root:=(select user_id from public.user_profiles where role='main_admin' and retired_at is null and approval_status='approved');
+ select * into strict course_row from public.courses where institution='ISAP' and active order by name limit 1;
+ insert into auth.users(id,email,email_confirmed_at) values(staff,staff||'@test.invalid',now());insert into public.user_profiles(user_id,full_name) values(staff,'Staff fixture');
+ perform set_config('role','service_role',true);perform public.bootstrap_operational_administrator(root);
+ perform public.save_operational_account(root,staff,'col_admin','Staff fixture',true,0,'[{"kind":"institution","scope_id":"ISAP"}]','{}','Fixture provision');
+ insert into public.events(id,name,institution,latitude,longitude,radius_meters,starts_at,ends_at) values(e,'Public test','ISAP',17,121,100,now()+interval '2 days',now()+interval '3 days'),(empty_event,'No roster','ISAP',17,121,100,now()+interval '2 days',now()+interval '3 days');
+ r:=public.save_class_section(root,null,0,jsonb_build_object('institution','ISAP','college',course_row.college,'course',course_row.name,'name','Public class '||id1,'academic_year','2026-2027','term','First semester'),'Fixture class');section:=(r->>'id')::uuid;
+ p:=public.preview_class_roster(root,section,jsonb_build_array(jsonb_build_object('row_number',2,'school_id',upper(id1),'full_name','Participant One'),jsonb_build_object('row_number',3,'school_id',upper(id1)||'-2','full_name','Participant Two')),'official.xlsx','merge');perform public.commit_class_roster(root,(p->>'id')::uuid,false,false,'Fixture roster');
+ perform public.set_event_class_rosters(root,e,0,jsonb_build_array(section),'Fixture eligibility');
+ begin perform public.save_event_public_link(root,empty_event,0,true,false,'','Publish without official list');raise exception 'FAIL: no-roster event published';exception when sqlstate '22023' then null;end;
+ link:=public.save_event_public_link(root,e,0,true,false,'','Publish fixture');token:=(link->>'token')::uuid;
+ if public.get_public_event_attendance(token) is null or public.get_public_event_attendance(token)?'latitude' or public.get_public_event_attendance(token)?'students' then raise exception 'FAIL: metadata missing or leaks private data';end if;
+ link:=public.save_event_public_link(root,e,1,false,false,'','Temporarily disable');if (link->>'token')::uuid<>token or public.get_public_event_attendance(token) is not null then raise exception 'FAIL: disable rotates or serves link';end if;
+ link:=public.save_event_public_link(root,e,2,true,false,'','Enable unchanged link');if (link->>'token')::uuid<>token then raise exception 'FAIL: enable rotates link';end if;
+ begin perform public.save_event_public_link(staff,e,3,true,true,'REPLACE LINK','Staff rotate request');raise exception 'FAIL: staff rotated link';exception when insufficient_privilege then null;end;
+ begin perform public.save_event_public_link(root,e,3,true,true,'','Missing explicit confirmation');raise exception 'FAIL: missing replacement confirmation';exception when insufficient_privilege then null;end;
+ old_token:=token;link:=public.save_event_public_link(root,e,3,true,true,'REPLACE LINK','Compromised link fixture');token:=(link->>'token')::uuid;
+ if token=old_token or public.get_public_event_attendance(old_token) is not null then raise exception 'FAIL: old compromised link still works';end if;
+ r:=pg_temp.submit_fixture(token,upper(id1));if r->'body'->'error'->>'code'<>'checkpoint_closed' then raise exception 'FAIL: future event accepted %',r;end if;
+ update public.events set starts_at=now()-interval '1 minute',ends_at=now()+interval '2 hours',checkpoints=jsonb_build_array(jsonb_build_object('key','first','label','Morning','opens_at',now()-interval '2 minutes','closes_at',now()+interval '1 hour'),jsonb_build_object('key','second','label','Afternoon','opens_at',now()+interval '1 hour','closes_at',now()+interval '2 hours')) where id=e;
+ select count(*) into count_students from public.students;select count(*) into count_users from public.user_profiles;
+ if abs(app_private.public_distance_meters(0,0,0,1)-111194.92664455874)>.001 or app_private.public_distance_meters(17,121,17,121)<>0 or abs(app_private.public_distance_meters(0,0,0,180)-20015086.79602057)>.001 then raise exception 'FAIL: Haversine math';end if;
+ if app_private.valid_attendance_signature('[[[0,0],[1,1]]]') or app_private.valid_attendance_signature('[[[2,0],[0,0]]]') then raise exception 'FAIL: invalid signature accepted';end if;
+ r:=pg_temp.submit_fixture(token,upper(id1),request_id);submission:=(r->'body'->>'receipt_id')::uuid;
+ if (r->>'status_code')::int<>202 or not exists(select 1 from public.public_attendance_submissions where id=submission and status='pending_review' and student_id is not null and distance_from_venue_meters=0 and review_reasons=array['review_workflow_required']) or not exists(select 1 from public.public_attendance_signatures where submission_id=submission) or not exists(select 1 from public.public_submission_rosters where submission_id=submission and section_id=section) then raise exception 'FAIL: valid submission/evidence %',r;end if;
+ if pg_temp.submit_fixture(token,upper(id1),request_id)<>r then raise exception 'FAIL: retry not idempotent';end if;
+ if public.public_attendance_receipt(token,request_id,repeat('d',64)) is not null then raise exception 'FAIL: cross-browser receipt access';end if;
+ if public.public_attendance_receipt(token,request_id,repeat('a',64),repeat('d',64))->'body'->'error'->>'code'<>'request_conflict' then raise exception 'FAIL: changed payload replay';end if;
+ if (pg_temp.submit_fixture(token,upper(id1))->>'status_code')::int<>409 or exists(select 1 from public.public_attendance_attempts where event_id=e and school_id=upper(id1)) then raise exception 'FAIL: duplicate accepted or charged';end if;
+ begin update public.events set radius_meters=200 where id=e;raise exception 'FAIL: venue changed after submission';exception when sqlstate '22023' then null;end;
+ begin perform public.set_event_class_rosters(root,e,1,jsonb_build_array(section),'Late eligibility update');raise exception 'FAIL: eligibility changed after submission';exception when sqlstate '22023' then null;end;
+ update public.events set name='Renamed event' where id=e;
+ if (public.get_event_public_link(root,e)->>'token')::uuid<>token or not exists(select 1 from public.public_attendance_submissions where id=submission and event_snapshot->>'name'='Public test') then raise exception 'FAIL: edit rotates link or mutates snapshot';end if;
+ r:=pg_temp.submit_fixture(token,'UNKNOWN-'||upper(id1));if not exists(select 1 from public.public_attendance_submissions where id=(r->'body'->>'receipt_id')::uuid and student_id is null and 'not_on_official_list'=any(review_reasons)) or (select count(*) from public.students)<>count_students or (select count(*) from public.user_profiles)<>count_users then raise exception 'FAIL: missing roster handling creates identity or skips review';end if;
+ r:=pg_temp.submit_fixture(token,upper(id1)||'-2',gen_random_uuid(),17,121,5,clock_timestamp(),'first',repeat('d',64),'Different name');if not exists(select 1 from public.public_attendance_submissions where id=(r->'body'->>'receipt_id')::uuid and 'identity_mismatch'=any(review_reasons)) then raise exception 'FAIL: roster name mismatch was silently accepted';end if;
+ -- Rejected attempts are durable, browser-scoped and idempotent.
+ request_id:=gen_random_uuid();r:=pg_temp.submit_fixture(token,'GEO-'||upper(id1),request_id,18);
+ if r->'body'->'error'->>'code'<>'outside_geofence' or (r->'body'->'attempts'->>'remaining')::int<>2 then raise exception 'FAIL: outside geofence %',r;end if;
+ perform pg_temp.submit_fixture(token,'GEO-'||upper(id1),request_id,18);
+ if (select rejected_count from public.public_attendance_attempts where event_id=e and school_id='GEO-'||upper(id1))<>1 then raise exception 'FAIL: retry charged twice';end if;
+ r:=pg_temp.submit_fixture(token,'GEO-'||upper(id1),gen_random_uuid(),17,121,51);if r->'body'->'error'->>'code'<>'inaccurate_location' then raise exception 'FAIL: low accuracy';end if;
+ r:=pg_temp.submit_fixture(token,'GEO-'||upper(id1),gen_random_uuid(),17,121,5,clock_timestamp()-interval '31 seconds');if r->'body'->'error'->>'code'<>'stale_location' then raise exception 'FAIL: stale location';end if;
+ r:=pg_temp.submit_fixture(token,'GEO-'||upper(id1));if r->'body'->'error'->>'code'<>'attempt_limit' then raise exception 'FAIL: fourth attempt accepted';end if;
+ r:=pg_temp.submit_fixture(token,'BOUNDARY-'||upper(id1),gen_random_uuid(),17.0008,121,20);if r->'body'->'error'->>'code'<>'uncertain_boundary' then raise exception 'FAIL: boundary uncertainty %',r;end if;
+ r:=pg_temp.submit_fixture(token,'FUTURE-'||upper(id1),gen_random_uuid(),17,121,5,clock_timestamp()+interval '10 seconds');if r->'body'->'error'->>'code'<>'stale_location' then raise exception 'FAIL: future location timestamp';end if;
+ r:=pg_temp.submit_fixture(token,'CHECKPOINT-'||upper(id1),gen_random_uuid(),17,121,5,clock_timestamp(),'second');if r->'body'->'error'->>'code'<>'checkpoint_closed' then raise exception 'FAIL: future checkpoint accepted';end if;
+ if exists(select 1 from public.public_attendance_attempts where event_id=e and school_id='CHECKPOINT-'||upper(id1)) then raise exception 'FAIL: closed checkpoint consumed attempts';end if;
+ if has_table_privilege('anon','public.public_attendance_signatures','SELECT') or has_table_privilege('authenticated','public.public_attendance_submissions','SELECT') or has_function_privilege('anon','public.get_public_event_attendance(uuid)','EXECUTE') or has_function_privilege('authenticated','public.submit_public_attendance(uuid,uuid,text,text,text,text,text,text,text,text,text,double precision,double precision,double precision,timestamptz,jsonb,text,boolean)','EXECUTE') then raise exception 'FAIL: direct browser access to private attendance';end if;
+end $$;
+rollback;

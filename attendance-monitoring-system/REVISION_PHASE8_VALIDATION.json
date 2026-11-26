@@ -1,0 +1,157 @@
+{
+  "phase": 8,
+  "date": "2026-11-26",
+  "status": "local_implementation_and_rehearsal_complete_release_pending",
+  "production_changed": false,
+  "migration": "20261126093828_revision_report_snapshots.sql",
+  "node": {
+    "total": 76,
+    "passed": 68,
+    "skipped": 8,
+    "failed": 0
+  },
+  "database": {
+    "date": "2026-11-26T17:59:29.771969+08:00",
+    "database": "isolated PostgreSQL 18 with minimal Auth/Storage stubs",
+    "migration": "20261126093828_revision_report_snapshots.sql",
+    "migrations": [
+      "20261125171730_operational_access_foundation.sql",
+      "20261125174653_class_rosters_and_assignments.sql",
+      "20261125183053_public_event_attendance.sql",
+      "20261125230133_public_device_binding.sql",
+      "20261126081453_attendance_review_queue.sql",
+      "20261126084411_account_lifecycle_and_audit_trail.sql",
+      "20261126093828_revision_report_snapshots.sql"
+    ],
+    "automatic_account_migration": false,
+    "rollback_fixtures": [
+      {
+        "file": "academic-catalog.sql",
+        "passed": true
+      },
+      {
+        "file": "account-lifecycle-audit.sql",
+        "passed": true
+      },
+      {
+        "file": "activity-logs.sql",
+        "passed": true
+      },
+      {
+        "file": "attendance-attempts.sql",
+        "passed": true
+      },
+      {
+        "file": "attendance-device-baseline.sql",
+        "passed": true
+      },
+      {
+        "file": "attendance-review-queue.sql",
+        "passed": true
+      },
+      {
+        "file": "attendance-workflow.sql",
+        "passed": true
+      },
+      {
+        "file": "bulk-review.sql",
+        "passed": true
+      },
+      {
+        "file": "checkpoints.sql",
+        "passed": true
+      },
+      {
+        "file": "class-rosters.sql",
+        "passed": true
+      },
+      {
+        "file": "email-release.sql",
+        "passed": true
+      },
+      {
+        "file": "manual-attendance.sql",
+        "passed": true
+      },
+      {
+        "file": "operational-access.sql",
+        "passed": true
+      },
+      {
+        "file": "operational-reports.sql",
+        "passed": true
+      },
+      {
+        "file": "participant-devices.sql",
+        "passed": true
+      },
+      {
+        "file": "public-attendance.sql",
+        "passed": true
+      },
+      {
+        "file": "review-center.sql",
+        "passed": true
+      },
+      {
+        "file": "single-active-session.sql",
+        "passed": true
+      },
+      {
+        "file": "student-directory.sql",
+        "passed": true
+      }
+    ],
+    "concurrent_last_administrator_guard_passed": true,
+    "concurrent_representative_guard_passed": true,
+    "concurrent_identity_guard_passed": true,
+    "concurrent_public_attendance_slot_guard_passed": true,
+    "concurrent_public_request_replay_passed": true,
+    "concurrent_first_device_binding_guard_passed": true,
+    "concurrent_shared_browser_guard_passed": true,
+    "concurrent_review_decision_guard_passed": true,
+    "concurrent_worker_decision_guard_passed": true,
+    "concurrent_worker_notification_guard_passed": true,
+    "concurrent_lifecycle_last_admin_guard_passed": true,
+    "concurrent_reactivation_version_guard_passed": true,
+    "concurrent_report_replay_guard_passed": true,
+    "concurrent_report_claim_guard_passed": true,
+    "new_tables_missing_rls": 0,
+    "new_security_definer_functions": 0,
+    "full_supabase_platform_tested": false
+  },
+  "ui": {
+    "source": "synthetic loopback only",
+    "viewports": [
+      "320x700",
+      "390x844",
+      "1280x1000"
+    ],
+    "checks": [
+      "no page horizontal overflow",
+      "snapshot creation",
+      "page 3 selection",
+      "expandable official rates",
+      "signature option",
+      "matching PDF preview controls"
+    ],
+    "pdf_visual": "Summary and participant/signature pages rasterized and inspected",
+    "docx_visual": "Not verified: renderer could not locate LibreOffice soffice.exe",
+    "screenshot": ".local-preview/reports-mobile.png"
+  },
+  "release_gates": [
+    "Fresh pre-cutover source/data/Storage backup and hosted staging restore",
+    "Canonical migration history review",
+    "Hosted Auth/Storage/Vercel tests and normal-browser downloads",
+    "DOCX visual rendering",
+    "One-minute escalation scheduler activation and health",
+    "Physical phones, printed QR and real GPS",
+    "School retention/privacy approval",
+    "Controlled rollout and retirement after acceptance"
+  ],
+  "privacy": {
+    "default_venue_distance": "redacted",
+    "signature_and_distance_evidence": "explicit administrator-only snapshot",
+    "precise_coordinates_device_and_ip": "excluded"
+  }
+}

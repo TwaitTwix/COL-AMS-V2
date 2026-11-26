@@ -1,0 +1,77 @@
+begin;
+create function pg_temp.submit_fixture(token uuid,school text,request_id uuid default gen_random_uuid(),latitude double precision default 17,longitude double precision default 121,accuracy double precision default 5,captured timestamptz default clock_timestamp(),checkpoint text default 'first',browser text default repeat('a',64),name text default 'Participant One',payload text default repeat('c',64)) returns jsonb language sql as $$
+ select public.submit_public_attendance(token,request_id,browser,repeat('b',64),'Synthetic browser',payload,school,name,'ISAP','Class A',checkpoint,latitude,longitude,accuracy,captured,'[[[0.1,0.1],[0.2,0.2],[0.3,0.1],[0.4,0.2],[0.5,0.1],[0.6,0.2],[0.7,0.1],[0.8,0.2]]]','2026-11-26-attendance-v1',true);
+$$;
+grant execute on function pg_temp.submit_fixture to service_role;
+do $$
+declare root uuid;staff uuid:=gen_random_uuid();e uuid:=gen_random_uuid();empty_event uuid:=gen_random_uuid();section uuid;course_row public.courses;r jsonb;p jsonb;link jsonb;token uuid;old_token uuid;request_id uuid:=gen_random_uuid();submission uuid;count_students integer;count_users integer;id1 text:='PA-'||left(replace(gen_random_uuid()::text,'-',''),12);i integer;rep uuid:=gen_random_uuid();regular uuid:=gen_random_uuid();fixture_case uuid;case2 uuid;third_case uuid;original_due timestamptz;historical uuid:=gen_random_uuid();old_session uuid:=gen_random_uuid();fresh_session uuid:=gen_random_uuid();other_section uuid;other_submission uuid;other_token uuid;before_access jsonb;life jsonb;
+begin
+ root:=(select user_id from public.user_profiles where role='main_admin' and retired_at is null and approval_status='approved');
+ select * into strict course_row from public.courses where institution='ISAP' and active order by name limit 1;
+ insert into auth.users(id,email,email_confirmed_at) values(staff,staff||'@test.invalid',now());insert into public.user_profiles(user_id,full_name) values(staff,'Staff fixture');
+ insert into auth.users(id,email,email_confirmed_at) values(rep,rep||'@test.invalid',now()),(regular,regular||'@test.invalid',now());insert into public.user_profiles(user_id,full_name) values(rep,'Review representative'),(regular,'Review regular');
+ insert into auth.users(id,email,email_confirmed_at) values(historical,historical||'@test.invalid',now());insert into public.user_profiles(user_id,full_name,role) values(historical,'Retired fixture','student');insert into auth.sessions(id,user_id,created_at) values(old_session,staff,now());
+ perform set_config('role','service_role',true);perform public.bootstrap_operational_administrator(root);
+ perform public.save_operational_account(root,staff,'col_admin','Staff fixture',true,0,'[{"kind":"institution","scope_id":"ISAP"}]','{}','Fixture provision');
+ insert into public.events(id,name,institution,latitude,longitude,radius_meters,starts_at,ends_at) values(e,'Public test','ISAP',17,121,100,now()+interval '2 days',now()+interval '3 days'),(empty_event,'No roster','ISAP',17,121,100,now()+interval '2 days',now()+interval '3 days');
+ r:=public.save_class_section(root,null,0,jsonb_build_object('institution','ISAP','college',course_row.college,'course',course_row.name,'name','Public class '||id1,'academic_year','2026-2027','term','First semester'),'Fixture class');section:=(r->>'id')::uuid;
+ p:=public.preview_class_roster(root,section,jsonb_build_array(jsonb_build_object('row_number',2,'school_id',upper(id1),'full_name','Participant One'),jsonb_build_object('row_number',3,'school_id',upper(id1)||'-2','full_name','Participant Two'),jsonb_build_object('row_number',4,'school_id',upper(id1)||'-3','full_name','Participant Three')),'official.xlsx','merge');perform public.commit_class_roster(root,(p->>'id')::uuid,false,false,'Fixture roster');
+ perform public.save_operational_account(root,rep,'classroom_representative','Review representative',true,0,'[]','{}','Review fixture');
+ perform public.save_operational_account(root,regular,'col_regular','Review regular',true,0,'[{"kind":"institution","scope_id":"ISAP"}]','{}','Review fixture');
+ perform public.assign_class_officer(root,section,rep,'representative',1,false,'Assign review representative');
+ perform public.set_event_class_rosters(root,e,0,jsonb_build_array(section),'Fixture eligibility');
+ begin perform public.save_event_public_link(root,empty_event,0,true,false,'','Publish without official list');raise exception 'FAIL: no-roster event published';exception when sqlstate '22023' then null;end;
+ link:=public.save_event_public_link(root,e,0,true,false,'','Publish fixture');token:=(link->>'token')::uuid;
+ update public.events set starts_at=now()-interval '1 minute',ends_at=now()+interval '2 hours',checkpoints=jsonb_build_array(jsonb_build_object('key','first','label','Attendance','opens_at',now()-interval '2 minutes','closes_at',now()+interval '2 hours')) where id=e;
+ r:=pg_temp.submit_fixture(token,upper(id1),request_id);submission:=(r->'body'->>'receipt_id')::uuid;
+ update public.user_profiles set student_id=(select student_id from public.public_attendance_submissions where id=submission) where user_id=staff;
+ -- A separate event for the same participant must remain outside the representative's history.
+ p:=public.save_class_section(root,null,0,jsonb_build_object('institution','ISAP','college',course_row.college,'course',course_row.name,'name','Private class '||id1,'academic_year','2026-2027','term','First semester'),'Private audit fixture');other_section:=(p->>'id')::uuid;
+ p:=public.preview_class_roster(root,other_section,jsonb_build_array(jsonb_build_object('row_number',2,'school_id',upper(id1),'full_name','Participant One')),'other.xlsx','merge');perform public.commit_class_roster(root,(p->>'id')::uuid,false,false,'Private event roster');
+ perform public.set_event_class_rosters(root,empty_event,0,jsonb_build_array(other_section),'Private event eligibility');p:=public.save_event_public_link(root,empty_event,0,true,false,'','Private event link');other_token:=(p->>'token')::uuid;
+ update public.events set starts_at=now()-interval '1 minute',ends_at=now()+interval '2 hours',checkpoints=jsonb_build_array(jsonb_build_object('key','first','label','Attendance','opens_at',now()-interval '2 minutes','closes_at',now()+interval '2 hours')) where id=empty_event;
+ p:=pg_temp.submit_fixture(other_token,upper(id1));other_submission:=(p->'body'->>'receipt_id')::uuid;
+ insert into public.audit_logs(actor_user_id,action,entity_type,entity_id,details) values(root,'fixture.redaction_check','public_attendance_submission',submission::text,'{"reason":"SENSITIVE-AUDIT-NOTE","latitude":17,"device_hash":"SENSITIVE-DEVICE","signature":"SENSITIVE-SIGNATURE","invitation":"SENSITIVE-INVITE"}'),(root,'private.other_event','public_attendance_submission',other_submission::text,'{}');
+ p:=public.get_audit_timeline(rep,'participant','student:'||(select student_id from public.public_attendance_submissions where id=submission)::text,1);
+ if p::text like '%private.other_event%' or p::text like '%SENSITIVE-%' then raise exception 'FAIL: audit leaked other event or raw evidence';end if;
+ p:=public.get_audit_timeline(root,'participant','student:'||(select student_id from public.public_attendance_submissions where id=submission)::text,1);
+ if p::text not like '%private.other_event%' or p::text like '%SENSITIVE-%' or p::text like '%"device_hash"%' then raise exception 'FAIL: administrator audit projection missing events or leaks evidence';end if;
+ p:=public.list_audit_groups(rep,'account','',1);if (p->>'total')::int<>1 or p->'items'->0->>'key'<>rep::text then raise exception 'FAIL: lower role sees other accounts';end if;
+ begin perform public.get_audit_timeline(rep,'account',staff::text,1);raise exception 'FAIL: unassigned account history read';exception when insufficient_privilege then null;end;
+ select count(*) into count_users from public.user_profiles;
+ perform pg_temp.submit_fixture(token,'UNKNOWN-'||upper(id1),gen_random_uuid(),17,121,5,clock_timestamp(),'first',repeat('e',64),'Unverified fixture claim');
+ p:=public.list_audit_groups(root,'participant','UNKNOWN-'||upper(id1),1);
+ if (p->>'total')::int<>1 or p->'items'->0->>'status' is distinct from 'Unverified attendance claim' or (select count(*) from public.user_profiles)<>count_users then raise exception 'FAIL: claim audit invented a login identity';end if;
+ p:=public.get_audit_timeline(root,'participant','claim:UNKNOWN-'||upper(id1),1);
+ if not exists(select 1 from jsonb_array_elements(p->'items') item where item->>'actor_kind'='participant' and item->>'actor_name'='Account-free participant') then raise exception 'FAIL: anonymous participant actor misattributed';end if;
+ begin perform public.get_audit_timeline(rep,'participant','claim:UNKNOWN-'||upper(id1),1);raise exception 'FAIL: representative read unassigned claim audit';exception when insufficient_privilege then null;end;
+ p:=public.list_audit_groups(root,'system','',1);if (p->>'total')::int<>1 then raise exception 'FAIL: background audit group unavailable';end if;
+ -- Deactivation preserves identity/grants and immediately denies old sessions/capabilities.
+ before_access:=public.get_operational_access(staff);perform public.enforce_operational_login(staff,old_session,true);
+ p:=public.get_account_lifecycle(root,staff);life:=public.set_account_lifecycle(root,staff,(p->>'account_version')::int,(p->>'lifecycle_version')::int,false,'Fixture account deactivation',true);
+ if app_private.operational_capable(staff,'events.view') or (public.get_operational_access(staff)->>'enabled')::boolean or (public.enforce_operational_login(staff,old_session,true)->>'active')::boolean then raise exception 'FAIL: deactivated account still acts';end if;
+ begin perform public.set_account_lifecycle(rep,staff,2,1,true,'Unauthorized reactivation',true);raise exception 'FAIL: representative can reactivate';exception when insufficient_privilege then null;end;
+ begin perform public.save_operational_account(root,staff,'administrator','Unsafe privilege change',true,2,'[]','{}','Bypass explicit reactivation');raise exception 'FAIL: access editor bypasses lifecycle block';exception when sqlstate '22023' then null;end;
+ p:=public.get_account_lifecycle(root,staff);perform public.set_account_lifecycle(root,staff,(p->>'account_version')::int,(p->>'lifecycle_version')::int,true,'Fixture explicit reactivation',true);
+ p:=public.get_operational_access(staff);
+ if p->>'role'<>before_access->>'role' or p->'scopes'<>before_access->'scopes' or (public.enforce_operational_login(staff,old_session,true)->>'active')::boolean then raise exception 'FAIL: reactivation elevates grants or restores an old session';end if;
+ perform set_config('role','postgres',true);insert into auth.sessions(id,user_id,created_at) values(fresh_session,staff,clock_timestamp());perform set_config('role','service_role',true);
+ if not (public.enforce_operational_login(staff,fresh_session,true)->>'active')::boolean then raise exception 'FAIL: fresh sign-in rejected after reactivation';end if;
+ p:=public.get_audit_timeline(root,'account',staff::text,1);
+ if not exists(select 1 from jsonb_array_elements(p->'items') item where item->'change_summary'->>'role'='col_admin' and (item->'change_summary'->>'scope_count')::int=1) then raise exception 'FAIL: safe role/grant audit summary missing';end if;
+ -- Archive and account state are independent; retired email-release records stay immutable historical identities.
+ perform public.set_participant_archive(root,(select student_id from public.public_attendance_submissions where id=submission),1,true,'Archive fixture participant',true);
+ update public.user_profiles set retired_at=now(),email_release_completed_at=now(),retired_student_id=(select student_id from public.public_attendance_submissions where id=submission) where user_id=historical;
+ p:=public.operational_student_directory(root,id1,true,1);
+ if (p->>'total')::int<>1 or jsonb_array_length(p->'items'->0->'accounts')<>2 or not app_private.operational_capable(staff,'events.view') then raise exception 'FAIL: archived directory loses historical account or auto-deactivates staff';end if;
+ begin perform public.set_account_lifecycle(root,historical,0,0,true,'Restore retired account',true);raise exception 'FAIL: retired account reanimated';exception when sqlstate '22023' then null;end;
+ perform public.set_participant_archive(root,(select student_id from public.public_attendance_submissions where id=submission),2,false,'Restore participant only',true);
+ begin perform public.set_account_lifecycle(root,root,(public.get_account_lifecycle(root,root)->>'account_version')::int,0,false,'Disable last administrator',true);raise exception 'FAIL: lifecycle removes last admin';exception when sqlstate '22023' then null;end;
+ begin delete from public.audit_logs where action='fixture.redaction_check';raise exception 'FAIL: service role can delete audit history';exception when insufficient_privilege then null;end;
+ perform set_config('role','postgres',true);
+ begin delete from public.audit_logs where action='fixture.redaction_check';raise exception 'FAIL: audit append-only trigger can be bypassed';exception when sqlstate '22023' then null;end;
+ perform set_config('role','service_role',true);
+ p:=public.list_audit_groups(root,'account','Retired fixture',1);if (p->>'total')::int<>1 then raise exception 'FAIL: historical account audit identity hidden';end if;
+ if has_table_privilege('authenticated','public.account_deactivations','SELECT') or has_function_privilege('anon','public.get_audit_timeline(uuid,text,text,integer)','EXECUTE') then raise exception 'FAIL: lifecycle or audit browser grants';end if;
+end $$;
+rollback;

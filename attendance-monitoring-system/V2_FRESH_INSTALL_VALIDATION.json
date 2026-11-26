@@ -1,0 +1,167 @@
+{
+  "database": "empty isolated PostgreSQL 18 with minimal Auth/Storage stubs",
+  "migrations": [
+    {
+      "file": "202611090000_initial_attendance_schema.sql",
+      "sha256": "feb244e62427a3357ac39536b0014f432d446622afeb55179b34e3fdd080df38",
+      "passed": true
+    },
+    {
+      "file": "202611090001_attendance_unique_checkins.sql",
+      "sha256": "d7c50dbb257a3b802d9afaf6f4ca8e0bcfc6a874f2cb323b9ac54e4d42e496c5",
+      "passed": true
+    },
+    {
+      "file": "202611090002_private_attendance_reports_bucket.sql",
+      "sha256": "79e52669f747458776b6d4929330d637d50768923849c73349d72c10e0ab7047",
+      "passed": true
+    },
+    {
+      "file": "202611090004_auth_profiles.sql",
+      "sha256": "82498b9ba5ec7d4606d77c3f136d3ae3285d110006d861cd48c2a5f5e645016d",
+      "passed": true
+    },
+    {
+      "file": "202611090005_account_roles_and_student_links.sql",
+      "sha256": "fe6bd43739944160912c5e45b3f7e7919cbebc2c526274d6a1d01932ae3fc934",
+      "passed": true
+    },
+    {
+      "file": "202611090006_durable_reports_and_audit_log.sql",
+      "sha256": "76aa117000af04d5eb2b1af362c250434a54790c36124eacaee00ea0ce542925",
+      "passed": true
+    },
+    {
+      "file": "202611090007_archive_roster_and_events.sql",
+      "sha256": "1e843e82a4d3094e44e746157e7665a166ec6e0b43e7ad97561e4d209f8ae29f",
+      "passed": true
+    },
+    {
+      "file": "20261115054157_student_event_attendance.sql",
+      "sha256": "6b3fa2a0aac9537666e5d53004dbe3a9f69ba9faebe937cbb27c38950e574652",
+      "passed": true
+    },
+    {
+      "file": "20261115054934_approval_email_and_device_risk.sql",
+      "sha256": "1c068aa19b4f178d87c169da57fc3251dc7aa46b7d59c4e6fb8377ea72001429",
+      "passed": true
+    },
+    {
+      "file": "20261115055855_attendance_review_indexes.sql",
+      "sha256": "6b542365ff8a4b5bd8424d051b888a376015d998a24e755ef96e01e8fc1e0da5",
+      "passed": true
+    },
+    {
+      "file": "20261116192527_institution_college_course_catalog.sql",
+      "sha256": "684ae6013ebefade9b8dc8a2598229f841de1ca3119e5d06d0b8bdc615084bdd",
+      "passed": true
+    },
+    {
+      "file": "20261116195857_attendance_attempt_limits.sql",
+      "sha256": "bf2c463d1a6b3a1f383b475da6edb75cac86976dc0863d097dfd253379ebb0b0",
+      "passed": true
+    },
+    {
+      "file": "20261117022312_privacy_and_manual_attendance.sql",
+      "sha256": "c99534489e73728e892732a6c8e41431e59480df29cc9e109f517d6717d15ccf",
+      "passed": true
+    },
+    {
+      "file": "20261119003314_review_center_pagination.sql",
+      "sha256": "fb53e66999fa0fa86dc5e89e2509c8884a34c307f2f2c418aad4250412a89e7a",
+      "passed": true
+    },
+    {
+      "file": "20261119004750_activity_log_pagination.sql",
+      "sha256": "6f08211c90a0e61f464a4a7ef301411edc476bd0b3dce646494cc96df89e1155",
+      "passed": true
+    },
+    {
+      "file": "20261119020054_roster_directory_and_report_previews.sql",
+      "sha256": "fc8c854ad92e2fda5d762491fdb25eb97d8bde505d359c66dd17784322b4832f",
+      "passed": true
+    },
+    {
+      "file": "20261119031327_attendance_checkpoints_and_staff_scanning.sql",
+      "sha256": "391d7a4a5fc0a451f7807a063e549260bcfad49b4265ecf15ff82e1474b4aab5",
+      "passed": true
+    },
+    {
+      "file": "20261119143155_attendance_bulk_review.sql",
+      "sha256": "b946229da37a300cead98bb7d118977d7b2de46dbdc80109dccb9bf7c1a41652",
+      "passed": true
+    },
+    {
+      "file": "20261120043058_archived_account_email_release.sql",
+      "sha256": "1a7f01dd52432141aa5bee7aa5d7201028d6b434df076307d11ebe4dd20be13b",
+      "passed": true
+    },
+    {
+      "file": "20261120043416_protect_retired_accounts.sql",
+      "sha256": "35e788dd7f5cc6a5990ac09e1bd91dd6d84eb53be17686b82b7f7db596cf7a70",
+      "passed": true
+    },
+    {
+      "file": "20261120044251_fix_email_release_completion_permissions.sql",
+      "sha256": "bf63a564621c5d6108c16014cd549452e7b17beda58850c66b7229d50e9822e2",
+      "passed": true
+    },
+    {
+      "file": "20261122123735_attendance_device_baseline.sql",
+      "sha256": "fbed81c9bbdfc79d3b8b5221d8be3e1b7358e40b2d0feefdf28380b7285ad38b",
+      "passed": true
+    },
+    {
+      "file": "20261122132832_single_active_login_session.sql",
+      "sha256": "e0ed91a3a4bf44f8f9e3ac3e5b3c1c6c5c8da3553c99d3805ae3d55305b90223",
+      "passed": true
+    },
+    {
+      "file": "20261125171730_operational_access_foundation.sql",
+      "sha256": "55be189cdd20841cbc202330e0a05980ad87dac477462f1fab483d9dbe8cd642",
+      "passed": true
+    },
+    {
+      "file": "20261125174653_class_rosters_and_assignments.sql",
+      "sha256": "9fc99605a9698b45ef0e3eacb6ce4ea8f5ef3c000fb6f08706ca390834e0a7da",
+      "passed": true
+    },
+    {
+      "file": "20261125183053_public_event_attendance.sql",
+      "sha256": "41d511d84981cd835aec98ec2651652f2cc9f44b7d0beefd0c6b49126d18fc3a",
+      "passed": true
+    },
+    {
+      "file": "20261125230133_public_device_binding.sql",
+      "sha256": "339ccbec1793850ab139775a4a5ad3815175f818005e75bf99906dfc6d4ea4de",
+      "passed": true
+    },
+    {
+      "file": "20261126081453_attendance_review_queue.sql",
+      "sha256": "14fc47634f5731b93e83316bf36d5bdeab1c9ff9c32da02c6168e033f22cfea7",
+      "passed": true
+    },
+    {
+      "file": "20261126084411_account_lifecycle_and_audit_trail.sql",
+      "sha256": "3e2e591599acefef18e56ca1f7258e46e5d8d7baebd14928f238a530486855d2",
+      "passed": true
+    },
+    {
+      "file": "20261126093828_revision_report_snapshots.sql",
+      "sha256": "c74c508b085b73d92059861a2d0519ebe0df4e5bb267d1594e480896369b8b10",
+      "passed": true
+    }
+  ],
+  "empty_data_counts": {
+    "students": 0,
+    "events": 0,
+    "user_profiles": 0,
+    "operational_accounts": 0,
+    "public_attendance_submissions": 0,
+    "operational_report_jobs": 0
+  },
+  "tables_without_rls": 0,
+  "report_bucket_private": true,
+  "full_supabase_platform_tested": false,
+  "hosted_database_changed": false
+}

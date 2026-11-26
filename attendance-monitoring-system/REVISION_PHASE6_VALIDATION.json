@@ -1,0 +1,144 @@
+{
+  "date": "2026-11-26T17:13:17.354996+08:00",
+  "database": "isolated PostgreSQL 18 with minimal Auth/Storage stubs",
+  "migration": "20261126084411_account_lifecycle_and_audit_trail.sql",
+  "migrations": [
+    "20261125171730_operational_access_foundation.sql",
+    "20261125174653_class_rosters_and_assignments.sql",
+    "20261125183053_public_event_attendance.sql",
+    "20261125230133_public_device_binding.sql",
+    "20261126081453_attendance_review_queue.sql",
+    "20261126084411_account_lifecycle_and_audit_trail.sql"
+  ],
+  "automatic_account_migration": false,
+  "rollback_fixtures": [
+    {
+      "file": "academic-catalog.sql",
+      "passed": true
+    },
+    {
+      "file": "account-lifecycle-audit.sql",
+      "passed": true
+    },
+    {
+      "file": "activity-logs.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-attempts.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-device-baseline.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-review-queue.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-workflow.sql",
+      "passed": true
+    },
+    {
+      "file": "bulk-review.sql",
+      "passed": true
+    },
+    {
+      "file": "checkpoints.sql",
+      "passed": true
+    },
+    {
+      "file": "class-rosters.sql",
+      "passed": true
+    },
+    {
+      "file": "email-release.sql",
+      "passed": true
+    },
+    {
+      "file": "manual-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "operational-access.sql",
+      "passed": true
+    },
+    {
+      "file": "participant-devices.sql",
+      "passed": true
+    },
+    {
+      "file": "public-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "review-center.sql",
+      "passed": true
+    },
+    {
+      "file": "single-active-session.sql",
+      "passed": true
+    },
+    {
+      "file": "student-directory.sql",
+      "passed": true
+    }
+  ],
+  "concurrent_last_administrator_guard_passed": true,
+  "concurrent_representative_guard_passed": true,
+  "concurrent_identity_guard_passed": true,
+  "concurrent_public_attendance_slot_guard_passed": true,
+  "concurrent_public_request_replay_passed": true,
+  "concurrent_first_device_binding_guard_passed": true,
+  "concurrent_shared_browser_guard_passed": true,
+  "concurrent_review_decision_guard_passed": true,
+  "concurrent_worker_decision_guard_passed": true,
+  "concurrent_worker_notification_guard_passed": true,
+  "concurrent_lifecycle_last_admin_guard_passed": true,
+  "concurrent_reactivation_version_guard_passed": true,
+  "new_tables_missing_rls": 0,
+  "new_security_definer_functions": 0,
+  "full_supabase_platform_tested": false,
+  "phase": 6,
+  "node_tests": {
+    "total": 67,
+    "passed": 59,
+    "skipped": 8,
+    "failed": 0,
+    "command": "npm test",
+    "live_tests_enabled": false
+  },
+  "ui": {
+    "synthetic_data_only": true,
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "desktop_viewport": [
+      1280,
+      900
+    ],
+    "no_page_horizontal_overflow": true,
+    "audit_tables_scroll_internally_on_mobile": true,
+    "archived_directory_and_readonly_retired_accounts": true,
+    "explicit_deactivate_reactivate_preserves_email_and_role": true,
+    "identity_types_and_clickable_history_pages": true,
+    "safe_role_and_permission_count_summary": true,
+    "real_accounts_used": false
+  },
+  "session_revocation": "Database access disabled and active application session cleared; old Auth-session cutoff remains invalid after reactivation; fresh login verified locally",
+  "reactivation_privileges": "Current role, stored explicit scopes and feature overrides preserved; no role/grant fields accepted by lifecycle API",
+  "historical_email_release_accounts": "Read-only; no completion/restoration performed",
+  "audit_projection": "Whitelisted fields and role/state/count summaries; excludes raw GPS, signatures, device/session/IP identifiers and private notes",
+  "audit_scope": "Administrators all; lower roles own account plus currently readable participant event cases",
+  "retention_period_confirmed": false,
+  "automatic_deletion_added": false,
+  "hosted_changes": false,
+  "auth_users_deleted": false,
+  "email_release_operations_performed": false,
+  "real_accounts_changed": false,
+  "deployment_performed": false,
+  "emails_sent": false,
+  "next_phase": "7: accessible navigation and mobile interface"
+}

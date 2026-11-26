@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#131313"><title>COL AMS · Campus attendance</title>
+  <script src="/js/theme.js"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/accessibility.css">
+  <link rel="stylesheet" href="/css/brand-theme.css">
+  <link rel="stylesheet" href="/css/light-theme.css">
+  <link rel="stylesheet" href="/css/operational.css">
+  <link rel="stylesheet" href="/css/navigation.css">
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script type="module" src="/js/bootstrap.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="topbar-home"><button id="workspace-menu-toggle" class="workspace-menu-toggle" type="button" aria-label="Open navigation menu" aria-controls="workspace-drawer" aria-haspopup="dialog" aria-expanded="false" hidden><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button><a class="brand" href="/"><span class="brand-logo"><img src="/assets/col-logo.jpg" alt="College of Leaders seal"></span><span class="brand-name"><strong>COL <i>·</i> AMS</strong><small>CAMPUS ATTENDANCE</small></span></a></div>
+    <div class="topbar-right"><button id="account-badge" class="account-badge account-link" type="button" title="Account settings" aria-label="Open account settings" hidden></button><button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false" title="Switch to light mode">☀</button><div class="notification-menu"><button id="notification-bell" class="notification-bell" type="button" aria-label="Notifications" aria-expanded="false" aria-controls="notification-popover" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg><span id="notification-count" hidden></span></button><section id="notification-popover" class="notification-popover" aria-label="Notifications" hidden></section></div><button id="sign-out" class="sign-out-button" hidden>Sign out</button></div>
+  </header>
+  <main class="auth-shell" id="session-loading" aria-live="polite"><section class="auth-card"><h1>Loading your account…</h1><p data-loading-copy>Checking your saved session.</p><button id="retry-session" type="button" class="secondary-button" hidden>Retry</button></section></main>
+  <main class="auth-shell" id="auth-panel" hidden>
+    <section class="auth-card" aria-labelledby="auth-title">
+      <div class="auth-logo"><img src="/assets/col-logo.jpg" alt="COL seal"></div>
+      <p class="eyebrow">MCNP / ISAP · CAMPUS ACCESS</p>
+      <h1 id="auth-title">Welcome back.</h1><p id="auth-copy" class="auth-copy">Sign in to your campus attendance account.</p>
+      <div id="auth-tabs" class="auth-tabs"><button class="auth-tab active" data-auth-mode="signin">Sign in</button><button class="auth-tab" data-auth-mode="signup">Register</button></div>
+      <form id="signin-form" class="auth-form">
+        <label class="auth-field">WORKING EMAIL<input name="email" type="email" autocomplete="email" required></label>
+        <label class="auth-field">PASSWORD<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="auth-submit" type="submit">Sign in →</button>
+        <button class="text-button" id="forgot-password" type="button" hidden>Forgot password? Send a reset email</button>
+      </form>
+      <form id="signup-form" class="auth-form" hidden>
+        <label class="auth-field">FULL NAME<input name="full_name" autocomplete="name" maxlength="120" required></label>
+        <label class="auth-field">STUDENT ID<input name="personal_id" maxlength="40" autocomplete="off" required></label>
+        <label class="auth-field">WORKING EMAIL<input name="email" type="email" autocomplete="email" required></label>
+        <div class="coordinate-fields"><label class="auth-field">INSTITUTION<select name="institution" required><option value="MCNP">MCNP</option><option value="ISAP">ISAP</option></select></label><label class="auth-field">COLLEGE<select name="college" required></select></label></div>
+        <label class="auth-field">COURSE<select name="course" required></select></label>
+        <label class="auth-field">PASSWORD<input name="password" type="password" autocomplete="new-password" minlength="10" maxlength="128" required><small>10–128 characters, with uppercase and lowercase letters, a number, and a special character.</small></label>
+        <label class="consent-check"><input name="privacy_accepted" type="checkbox" required><span>I have read the <a href="/privacy.html" target="_blank" rel="noopener">privacy notice</a> and consent to the described use of my data for campus attendance and account security.</span></label>
+        <p class="auth-footnote">Verify your email, then wait for an administrator to verify your student ID. You may register and verify email on different devices without a penalty. Your first valid venue scan establishes your attendance device. Later device changes may add a penalty point and require review; shared attendance devices require review.</p>
+        <button class="auth-submit" type="submit">Create account →</button>
+      </form>
+      <form id="recovery-form" class="auth-form" hidden>
+        <label class="auth-field">ACCOUNT EMAIL<input name="email" type="email" autocomplete="email" required></label>
+        <button class="auth-submit" type="submit">Send password reset email →</button><button type="button" class="text-button" data-auth-mode="signin">Back to sign in</button>
+      </form>
+      <form id="update-password-form" class="auth-form" hidden>
+        <label class="auth-field">NEW PASSWORD<input name="password" type="password" autocomplete="new-password" minlength="10" maxlength="128" required><small>10–128 characters, with uppercase and lowercase letters, a number, and a special character.</small></label>
+        <label class="auth-field">CONFIRM PASSWORD<input name="confirm_password" type="password" autocomplete="new-password" minlength="10" maxlength="128" required></label>
+        <button class="auth-submit" type="submit">Update password →</button>
+      </form>
+      <form id="profile-completion-form" class="auth-form" hidden>
+        <label class="auth-field">FULL NAME<input name="full_name" maxlength="120" required></label>
+        <label class="auth-field">PERSONAL / STUDENT ID<input name="personal_id" maxlength="40" required></label>
+        <label class="auth-field">INSTITUTION<select name="institution"><option>MCNP</option><option>ISAP</option></select></label>
+        <label class="auth-field">COLLEGE<select name="college" required></select></label>
+        <label class="auth-field">COURSE<select name="course" required></select></label>
+        <button type="submit" class="auth-submit">Complete registration details →</button>
+      </form>
+      <form id="privacy-form" class="auth-form" hidden>
+        <p class="muted">Before continuing, review how COL AMS uses account, browser device, and attendance location data. Your choice will be recorded.</p>
+        <a class="secondary-button privacy-link" href="/privacy.html" target="_blank" rel="noopener">Read the privacy notice ↗</a>
+        <label class="consent-check"><input name="accepted" type="checkbox" required><span>I have read the notice and consent to the described use of my data for campus attendance and account security.</span></label>
+        <button class="auth-submit" type="submit">Accept and continue →</button>
+        <p class="muted">You may decline by signing out. Contact campus administration about alternative attendance arrangements.</p>
+      </form>
+      <div id="auth-message" class="auth-message" role="status" aria-live="polite" hidden></div>
+      <button id="resend-verification" class="text-button" type="button">Resend verification email</button>
+      <button id="refresh-approval" class="text-button" type="button" hidden>Check approval status</button>
+      <div class="auth-secure">✦ Secure campus access</div>
+    </section>
+  </main>
+  <div class="workspace" id="workspace" hidden>
+    <dialog id="workspace-drawer" class="workspace-drawer" aria-labelledby="workspace-drawer-title"><div class="drawer-heading"><h2 id="workspace-drawer-title">Workspace menu</h2><button id="workspace-menu-close" class="secondary-button" type="button" aria-label="Close navigation menu" autofocus>Close</button></div><aside class="sidebar"><nav id="workspace-nav" aria-label="Main navigation"></nav><p class="sidebar-note">Verified attendance.<br>Connected campuses.</p></aside></dialog>
+    <main id="workspace-main" tabindex="-1"><div id="page-content"></div></main>
+  </div>
+  <div id="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="qr-dialog"><div class="card-heading"><h2 id="qr-title">Event QR</h2><button id="close-qr" class="small-action">Close</button></div><div id="event-qr" class="student-qr"></div><p id="qr-expiry"></p><p class="muted">Display this code at the venue. It refreshes automatically and expires after five minutes.</p><button id="rotate-qr" class="secondary-button">Revoke previous codes</button></dialog>
+  <footer><span>COL · ATTENDANCE MANAGEMENT SYSTEM</span><a href="/privacy.html" target="_blank" rel="noopener">Privacy notice</a><span>MCNP / ISAP</span></footer>
+</div>
+</body>
+</html>

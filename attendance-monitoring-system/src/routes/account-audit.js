@@ -1,0 +1,16 @@
+import {Router} from 'express';
+import {z} from 'zod';
+import {validate} from '../utils/validate.js';
+import {requireOperationalFeature,accessError} from '../services/operational-access-service.js';
+export const accountLifecycleSchema=z.object({account_version:z.number().int().min(0),lifecycle_version:z.number().int().min(0),enabled:z.boolean(),reason:z.string().trim().min(3).max(500),confirm:z.literal(true)}).strict();
+export function createAccountAuditRouter({client}){
+ const router=Router(),handle=fn=>async(req,res,next)=>{try{await fn(req,res);}catch(error){next(error);}};
+ const call=async(name,args)=>{const {data,error}=await client.rpc(name,args);if(error)throw accessError(error);return data;};
+ router.get('/student-records',requireOperationalFeature('accounts.manage'),handle(async(req,res)=>{const q=validate(z.object({search:z.string().trim().max(100).default(''),archived:z.enum(['true','false']).default('false'),page:z.coerce.number().int().min(1).max(100000).default(1)}).strict(),req.query);res.json(await call('operational_student_directory',{p_actor:req.authUser.id,p_search:q.search,p_archived:q.archived==='true',p_page:q.page}));}));
+ router.get('/accounts/:id/lifecycle',requireOperationalFeature('accounts.manage'),handle(async(req,res)=>{validate(z.uuid(),req.params.id);const account=await call('get_account_lifecycle',{p_actor:req.authUser.id,p_user:req.params.id});if(!account)return res.sendStatus(404);res.json({account});}));
+ router.put('/accounts/:id/lifecycle',requireOperationalFeature('accounts.manage'),handle(async(req,res)=>{validate(z.uuid(),req.params.id);const q=validate(accountLifecycleSchema,req.body);res.json(await call('set_account_lifecycle',{p_actor:req.authUser.id,p_user:req.params.id,p_account_version:q.account_version,p_lifecycle_version:q.lifecycle_version,p_enabled:q.enabled,p_reason:q.reason,p_confirm:q.confirm}));}));
+ router.put('/student-records/:id/archive',requireOperationalFeature('accounts.manage'),handle(async(req,res)=>{validate(z.uuid(),req.params.id);const q=validate(z.object({version:z.number().int().positive(),archived:z.boolean(),reason:z.string().trim().min(3).max(500),confirm:z.literal(true)}).strict(),req.body);res.json(await call('set_participant_archive',{p_actor:req.authUser.id,p_student:req.params.id,p_version:q.version,p_archived:q.archived,p_reason:q.reason,p_confirm:q.confirm}));}));
+ router.get('/audit/groups',requireOperationalFeature('audit.view'),handle(async(req,res)=>{const q=validate(z.object({kind:z.enum(['account','participant','system']).default('account'),search:z.string().trim().max(100).default(''),page:z.coerce.number().int().min(1).max(100000).default(1)}).strict(),req.query);res.json(await call('list_audit_groups',{p_actor:req.authUser.id,p_kind:q.kind,p_search:q.search,p_page:q.page}));}));
+ router.get('/audit/timeline',requireOperationalFeature('audit.view'),handle(async(req,res)=>{const q=validate(z.object({kind:z.enum(['account','participant','system']),key:z.string().min(1).max(100),page:z.coerce.number().int().min(1).max(100000).default(1)}).strict(),req.query);res.json(await call('get_audit_timeline',{p_actor:req.authUser.id,p_kind:q.kind,p_key:q.key,p_page:q.page}));}));
+ return router;
+}

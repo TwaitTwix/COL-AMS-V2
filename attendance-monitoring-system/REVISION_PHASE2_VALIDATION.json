@@ -1,0 +1,108 @@
+{
+  "date": "2026-11-26T02:23:52.260770+08:00",
+  "database": "isolated PostgreSQL 18 with minimal Auth/Storage stubs",
+  "migration": "20261125174653_class_rosters_and_assignments.sql",
+  "migrations": [
+    "20261125171730_operational_access_foundation.sql",
+    "20261125174653_class_rosters_and_assignments.sql"
+  ],
+  "automatic_account_migration": false,
+  "rollback_fixtures": [
+    {
+      "file": "academic-catalog.sql",
+      "passed": true
+    },
+    {
+      "file": "activity-logs.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-attempts.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-device-baseline.sql",
+      "passed": true
+    },
+    {
+      "file": "attendance-workflow.sql",
+      "passed": true
+    },
+    {
+      "file": "bulk-review.sql",
+      "passed": true
+    },
+    {
+      "file": "checkpoints.sql",
+      "passed": true
+    },
+    {
+      "file": "class-rosters.sql",
+      "passed": true
+    },
+    {
+      "file": "email-release.sql",
+      "passed": true
+    },
+    {
+      "file": "manual-attendance.sql",
+      "passed": true
+    },
+    {
+      "file": "operational-access.sql",
+      "passed": true
+    },
+    {
+      "file": "review-center.sql",
+      "passed": true
+    },
+    {
+      "file": "single-active-session.sql",
+      "passed": true
+    },
+    {
+      "file": "student-directory.sql",
+      "passed": true
+    }
+  ],
+  "concurrent_last_administrator_guard_passed": true,
+  "concurrent_representative_guard_passed": true,
+  "concurrent_identity_guard_passed": true,
+  "new_tables_missing_rls": 0,
+  "new_security_definer_functions": 0,
+  "full_supabase_platform_tested": false,
+  "phase": 2,
+  "node_tests": {
+    "discovered": 55,
+    "passed": 47,
+    "failed": 0,
+    "skipped": 8
+  },
+  "browser_checks": {
+    "synthetic_data_only": true,
+    "desktop_viewport": [
+      1280,
+      900
+    ],
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "table_and_form_text_px": 16,
+    "preview_button_height_px": 52,
+    "horizontal_page_overflow": false,
+    "preview_table_scroll_contained": true,
+    "checks": [
+      "roster page 2",
+      "historical version read-only view",
+      "synthetic workbook valid/rejected preview",
+      "officer name suggestions",
+      "frozen event v1 versus current class v2",
+      "class navigation cancels pending search refresh"
+    ]
+  },
+  "migration_checksums": {
+    "20261125171730_operational_access_foundation.sql": "55be189cdd20841cbc202330e0a05980ad87dac477462f1fab483d9dbe8cd642",
+    "20261125174653_class_rosters_and_assignments.sql": "9fc99605a9698b45ef0e3eacb6ce4ea8f5ef3c000fb6f08706ca390834e0a7da"
+  }
+}

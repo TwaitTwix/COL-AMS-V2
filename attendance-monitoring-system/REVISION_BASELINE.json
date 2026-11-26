@@ -1,0 +1,1119 @@
+{
+  "recorded_date": "2026-11-26",
+  "timezone": "Asia/Shanghai",
+  "source_commit": "56789c8b0086cb6995fccda4939981fe4037faf0",
+  "snapshot_at": "2026-11-25T16:57:38.042104+00:00",
+  "database_server_version": "17.11",
+  "public_tables": [
+    {
+      "name": "admin_notifications",
+      "rows": 51,
+      "rls": true,
+      "columns": [
+        "id",
+        "kind",
+        "user_id",
+        "incident_id",
+        "attendance_id",
+        "message",
+        "read_at",
+        "created_at"
+      ],
+      "constraints": [
+        "admin_notifications_attendance_id_fkey",
+        "admin_notifications_incident_id_fkey",
+        "admin_notifications_pkey",
+        "admin_notifications_user_id_fkey"
+      ]
+    },
+    {
+      "name": "attendance_attempts",
+      "rows": 7,
+      "rls": true,
+      "columns": [
+        "student_id",
+        "event_id",
+        "rejected_count",
+        "last_rejection",
+        "updated_at",
+        "checkpoint_key"
+      ],
+      "constraints": [
+        "attendance_attempts_event_id_fkey",
+        "attendance_attempts_pkey",
+        "attendance_attempts_rejected_count_check",
+        "attendance_attempts_student_id_fkey"
+      ]
+    },
+    {
+      "name": "attendance_logs",
+      "rows": 10,
+      "rls": true,
+      "columns": [
+        "id",
+        "student_id",
+        "event_id",
+        "distance_from_venue_meters",
+        "checked_in_at",
+        "status",
+        "device_hash",
+        "user_id",
+        "latitude",
+        "longitude",
+        "accuracy_meters",
+        "risk_reasons",
+        "reviewed_by",
+        "reviewed_at",
+        "review_note",
+        "entry_method",
+        "recorded_by",
+        "manual_reason",
+        "checkpoint_key",
+        "checkpoint_label"
+      ],
+      "constraints": [
+        "attendance_logs_distance_from_venue_meters_check",
+        "attendance_logs_entry_method_check",
+        "attendance_logs_event_id_fkey",
+        "attendance_logs_pkey",
+        "attendance_logs_recorded_by_fkey",
+        "attendance_logs_reviewed_by_fkey",
+        "attendance_logs_status_check",
+        "attendance_logs_student_id_fkey",
+        "attendance_logs_user_id_fkey"
+      ]
+    },
+    {
+      "name": "audit_logs",
+      "rows": 173,
+      "rls": true,
+      "columns": [
+        "id",
+        "actor_user_id",
+        "action",
+        "entity_type",
+        "entity_id",
+        "details",
+        "created_at"
+      ],
+      "constraints": [
+        "audit_logs_actor_user_id_fkey",
+        "audit_logs_pkey"
+      ]
+    },
+    {
+      "name": "colleges",
+      "rows": 30,
+      "rls": true,
+      "columns": [
+        "institution",
+        "name",
+        "abbreviation",
+        "active"
+      ],
+      "constraints": [
+        "colleges_institution_check",
+        "colleges_name_check",
+        "colleges_pkey"
+      ]
+    },
+    {
+      "name": "courses",
+      "rows": 18,
+      "rls": true,
+      "columns": [
+        "institution",
+        "college",
+        "name",
+        "active"
+      ],
+      "constraints": [
+        "courses_institution_college_fkey",
+        "courses_name_check",
+        "courses_pkey"
+      ]
+    },
+    {
+      "name": "device_incidents",
+      "rows": 40,
+      "rls": true,
+      "columns": [
+        "id",
+        "user_id",
+        "device_hash",
+        "changed_device",
+        "shared_device",
+        "penalty_points",
+        "status",
+        "reviewed_by",
+        "reviewed_at",
+        "created_at"
+      ],
+      "constraints": [
+        "device_incidents_pkey",
+        "device_incidents_reviewed_by_fkey",
+        "device_incidents_status_check",
+        "device_incidents_user_id_device_hash_key",
+        "device_incidents_user_id_fkey"
+      ]
+    },
+    {
+      "name": "events",
+      "rows": 14,
+      "rls": true,
+      "columns": [
+        "id",
+        "name",
+        "latitude",
+        "longitude",
+        "radius_meters",
+        "starts_at",
+        "ends_at",
+        "archived_at",
+        "qr_version",
+        "institution",
+        "college",
+        "max_check_in_attempts",
+        "checkpoints"
+      ],
+      "constraints": [
+        "event_college_institution",
+        "events_active_window_valid",
+        "events_institution_check",
+        "events_latitude_check",
+        "events_longitude_check",
+        "events_max_check_in_attempts_check",
+        "events_pkey",
+        "events_radius_meters_check"
+      ]
+    },
+    {
+      "name": "login_logs",
+      "rows": 99,
+      "rls": true,
+      "columns": [
+        "id",
+        "user_id",
+        "session_id",
+        "device_hash",
+        "user_agent",
+        "ip_address",
+        "changed_device",
+        "shared_device",
+        "created_at"
+      ],
+      "constraints": [
+        "login_logs_pkey",
+        "login_logs_user_id_fkey",
+        "login_logs_user_id_session_id_device_hash_key"
+      ]
+    },
+    {
+      "name": "report_jobs",
+      "rows": 17,
+      "rls": true,
+      "columns": [
+        "id",
+        "requested_by",
+        "event_id",
+        "format",
+        "status",
+        "file_path",
+        "record_count",
+        "error",
+        "created_at",
+        "updated_at",
+        "started_at",
+        "completed_at",
+        "preview_path"
+      ],
+      "constraints": [
+        "report_jobs_event_id_fkey",
+        "report_jobs_format_check",
+        "report_jobs_pkey",
+        "report_jobs_record_count_check",
+        "report_jobs_requested_by_fkey",
+        "report_jobs_status_check"
+      ]
+    },
+    {
+      "name": "students",
+      "rows": 16,
+      "rls": true,
+      "columns": [
+        "id",
+        "name",
+        "student_number",
+        "student_token",
+        "created_at",
+        "archived_at",
+        "institution",
+        "college",
+        "course"
+      ],
+      "constraints": [
+        "students_course_fkey",
+        "students_course_parent_check",
+        "students_institution_check",
+        "students_pkey",
+        "students_student_number_key",
+        "students_student_token_key"
+      ]
+    },
+    {
+      "name": "user_devices",
+      "rows": 52,
+      "rls": true,
+      "columns": [
+        "user_id",
+        "device_hash",
+        "first_seen_at",
+        "last_seen_at",
+        "user_agent"
+      ],
+      "constraints": [
+        "user_devices_pkey",
+        "user_devices_user_id_fkey"
+      ]
+    },
+    {
+      "name": "user_profiles",
+      "rows": 17,
+      "rls": true,
+      "columns": [
+        "user_id",
+        "full_name",
+        "role",
+        "created_at",
+        "email",
+        "student_id",
+        "personal_id",
+        "institution",
+        "college",
+        "approval_status",
+        "reviewed_by",
+        "reviewed_at",
+        "review_note",
+        "primary_device_hash",
+        "penalty_points",
+        "course",
+        "privacy_version",
+        "privacy_accepted_at",
+        "retired_at",
+        "retired_student_id",
+        "retired_personal_id",
+        "email_release_completed_at",
+        "email_release_reason",
+        "retired_by",
+        "attendance_device_hash",
+        "attendance_device_bound_at",
+        "active_login_session_id",
+        "active_login_started_at"
+      ],
+      "constraints": [
+        "profiles_course_fkey",
+        "profiles_course_parent_check",
+        "user_profiles_approval_status_check",
+        "user_profiles_institution_check",
+        "user_profiles_penalty_points_check",
+        "user_profiles_pkey",
+        "user_profiles_retired_by_fkey",
+        "user_profiles_retired_student_id_fkey",
+        "user_profiles_reviewed_by_fkey",
+        "user_profiles_role_check",
+        "user_profiles_student_id_fkey",
+        "user_profiles_user_id_fkey"
+      ]
+    }
+  ],
+  "application_functions": [
+    {
+      "schema": "app_private",
+      "name": "login_session_started",
+      "arguments": "p_user uuid, p_session uuid",
+      "sha256": "23e793fb851e1d0d3e6dcec164a1983cb27ec5eafc73e582fd3a69cb9da27047"
+    },
+    {
+      "schema": "public",
+      "name": "approve_registration",
+      "arguments": "p_actor uuid, p_user uuid, p_decision text, p_note text",
+      "sha256": "82bd9da67977f88dfc49efa25bdc30bab19ee0bc95a0b53cde7e51548bd1d44b"
+    },
+    {
+      "schema": "public",
+      "name": "approve_unflagged_attendance",
+      "arguments": "p_actor uuid, p_ids uuid[]",
+      "sha256": "c7145f7dc733eda7debccdc4d430841a34aaeb2e328760a42f64fcee3c1f72b7"
+    },
+    {
+      "schema": "public",
+      "name": "attempt_event_attendance",
+      "arguments": "p_user uuid, p_event uuid, p_qr_version uuid, p_device_hash text, p_latitude double precision, p_longitude double precision, p_accuracy double precision, p_qr_error text",
+      "sha256": "dddd9ddae45f097a615a8eadce329de991ccfd3156cf4a0b0edc704286b599a3"
+    },
+    {
+      "schema": "public",
+      "name": "attendance_browser_shared",
+      "arguments": "p_user uuid, p_hash text",
+      "sha256": "20ace84eb9f7ab43727ab88a8e7fdd15436548f04b53891f4eed18ecf3145fd7"
+    },
+    {
+      "schema": "public",
+      "name": "attendance_review_flagged",
+      "arguments": "a attendance_logs",
+      "sha256": "6f7a849d20964009d2cef66c6061c89638df47ca32427918d47d8eb4449465c5"
+    },
+    {
+      "schema": "public",
+      "name": "attendance_review_rows",
+      "arguments": "p_state text, p_search text, p_risk text",
+      "sha256": "2871f2cf4b96f8a4c1151687bf60f08c4baec6d73c55bf3afff59b7a4d46e6e3"
+    },
+    {
+      "schema": "public",
+      "name": "begin_archived_email_release",
+      "arguments": "p_actor uuid, p_student uuid, p_user uuid, p_email text, p_reason text",
+      "sha256": "36b4d048668db07b1e73b2b0ce2692a5a80a19e53155997b104e353e46d3cbdc"
+    },
+    {
+      "schema": "public",
+      "name": "enforce_active_login",
+      "arguments": "p_user uuid, p_session uuid, p_activate boolean",
+      "sha256": "3a69e804d19ae96ace68a408e897c9a2ec8b667cc318043a593d9c5157fa2b30"
+    },
+    {
+      "schema": "public",
+      "name": "ensure_staff_attendance_profile",
+      "arguments": "p_user uuid",
+      "sha256": "b8016981abbc35dfec39f5ef2ed5ad3403393bce6195d5b5333ce9c2ee00a97f"
+    },
+    {
+      "schema": "public",
+      "name": "evaluate_attendance_device",
+      "arguments": "p_user uuid, p_hash text, p_bind boolean",
+      "sha256": "5f75652d30737569e321ff2533a9ec6ce0b3aca8fccb822869dd1571742d61c5"
+    },
+    {
+      "schema": "public",
+      "name": "event_attendance_statistics",
+      "arguments": "p_event uuid",
+      "sha256": "01d2f97a0373a584e0e5dd924a30656a6f71b67a39ddf1838692fdeae9860644"
+    },
+    {
+      "schema": "public",
+      "name": "finish_archived_email_release",
+      "arguments": "p_actor uuid, p_user uuid, p_auth_retired boolean",
+      "sha256": "37612812887ad4caa733e223cf63dd4ea6f4b82d7ae57e95ee6ca583a0bfc26f"
+    },
+    {
+      "schema": "public",
+      "name": "list_activity_logs",
+      "arguments": "p_category text, p_filter text, p_search text, p_page integer, p_size integer",
+      "sha256": "9e1ffb8424645c69e88fdce8b9d882012f7e2ee50d1652566f55ec761de247f9"
+    },
+    {
+      "schema": "public",
+      "name": "list_filtered_reviews",
+      "arguments": "p_category text, p_state text, p_search text, p_page integer, p_size integer, p_risk text",
+      "sha256": "5a728e281e0d0ad872cc7fc708b31e8380bd92d8c29bf1d9e8ee83fefef75f0f"
+    },
+    {
+      "schema": "public",
+      "name": "list_review_items",
+      "arguments": "p_category text, p_state text, p_search text, p_page integer, p_size integer",
+      "sha256": "7614c03af4e7ee4648d9093923a35453d5a053b2345ec1cb761605bec3b7c86c"
+    },
+    {
+      "schema": "public",
+      "name": "list_student_records",
+      "arguments": "p_search text, p_state text, p_page integer, p_size integer",
+      "sha256": "44c406fe28d63010ef09eb0efb05f62b3a69e7a1eb487f5dfc1a4bd33bfdd8a7"
+    },
+    {
+      "schema": "public",
+      "name": "preview_unflagged_attendance",
+      "arguments": "p_search text",
+      "sha256": "fc04a6d9e5f02de3190a0d9aa281a0fcc9eed3dd40beba3203a621bee0a3f944"
+    },
+    {
+      "schema": "public",
+      "name": "protect_retired_account",
+      "arguments": "",
+      "sha256": "e62cf654e2e2842a80c1c309f560e5efda2b59c3c08f6ed81d674888489dc36a"
+    },
+    {
+      "schema": "public",
+      "name": "record_checkpoint_manual",
+      "arguments": "p_actor uuid, p_student uuid, p_event uuid, p_reason text, p_key text",
+      "sha256": "01442e996454d561c53121fea5ec21d761109d25fa7846273a990b608956a2bb"
+    },
+    {
+      "schema": "public",
+      "name": "record_device_session",
+      "arguments": "p_user_id uuid, p_session_id text, p_device_hash text, p_user_agent text, p_ip_address text",
+      "sha256": "8122c9aced2563a623f0e32ef0c1034d4c8b324f21ae33f1440205796d216533"
+    },
+    {
+      "schema": "public",
+      "name": "record_manual_attendance",
+      "arguments": "p_actor uuid, p_student uuid, p_event uuid, p_reason text",
+      "sha256": "1b3d89a98e868adb9570d07438bb71da648b266f83ac5e43e120bca9b6638dba"
+    },
+    {
+      "schema": "public",
+      "name": "resolve_event_checkpoint",
+      "arguments": "p_event events, p_key text",
+      "sha256": "65491e423df7f8a4f21f647c7d747778474bf4d4b04540e02c83aae4b7c97915"
+    },
+    {
+      "schema": "public",
+      "name": "submit_checkpoint_attendance",
+      "arguments": "p_user uuid, p_event uuid, p_key text, p_qr_version uuid, p_device_hash text, p_latitude double precision, p_longitude double precision, p_accuracy double precision, p_qr_error text",
+      "sha256": "b60a4024e0a37b0f169c77a1df9b0bde27a3f59d9fe265844e939ba4d2a2a044"
+    },
+    {
+      "schema": "public",
+      "name": "submit_event_attendance",
+      "arguments": "p_user uuid, p_event uuid, p_qr_version uuid, p_device_hash text, p_latitude double precision, p_longitude double precision, p_accuracy double precision",
+      "sha256": "343f677446b07926f6fdfdf7a2a7b08f4ed9ce8939ecec1c0ea4ccf3793f9e81"
+    },
+    {
+      "schema": "public",
+      "name": "sync_student_affiliation",
+      "arguments": "",
+      "sha256": "9d7237d04d5d7a92ca1286591830e387d846d4ae4ab49bd778fd2b1cc487996e"
+    },
+    {
+      "schema": "public",
+      "name": "validate_event_checkpoints",
+      "arguments": "",
+      "sha256": "c5fd958c26b4483067944fbd487c89b05d6ca6196f91e354ac616e6ef7c55246"
+    }
+  ],
+  "migration_inventory": [
+    {
+      "local_file": "202611090000_initial_attendance_schema.sql",
+      "local_sha256": "feb244e62427a3357ac39536b0014f432d446622afeb55179b34e3fdd080df38",
+      "deployed_version": "20261109060510",
+      "deployed_name": "initial_attendance_schema",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "202611090001_attendance_unique_checkins.sql",
+      "local_sha256": "d7c50dbb257a3b802d9afaf6f4ca8e0bcfc6a874f2cb323b9ac54e4d42e496c5",
+      "deployed_version": "20261109060516",
+      "deployed_name": "attendance_unique_checkins",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "202611090002_private_attendance_reports_bucket.sql",
+      "local_sha256": "79e52669f747458776b6d4929330d637d50768923849c73349d72c10e0ab7047",
+      "deployed_version": "20261109060522",
+      "deployed_name": "private_attendance_reports_bucket",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "202611090004_auth_profiles.sql",
+      "local_sha256": "82498b9ba5ec7d4606d77c3f136d3ae3285d110006d861cd48c2a5f5e645016d",
+      "deployed_version": "20261109063813",
+      "deployed_name": "auth_profiles_and_roles",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "202611090005_account_roles_and_student_links.sql",
+      "local_sha256": "fe6bd43739944160912c5e45b3f7e7919cbebc2c526274d6a1d01932ae3fc934",
+      "deployed_version": "20261109133949",
+      "deployed_name": "account_roles_and_student_links",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "202611090006_durable_reports_and_audit_log.sql",
+      "local_sha256": "76aa117000af04d5eb2b1af362c250434a54790c36124eacaee00ea0ce542925",
+      "deployed_version": "20261109143440",
+      "deployed_name": "durable_reports_and_audit_log",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "202611090007_archive_roster_and_events.sql",
+      "local_sha256": "1e843e82a4d3094e44e746157e7665a166ec6e0b43e7ad97561e4d209f8ae29f",
+      "deployed_version": "20261109143858",
+      "deployed_name": "archive_roster_and_events",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261115054157_student_event_attendance.sql",
+      "local_sha256": "6b3fa2a0aac9537666e5d53004dbe3a9f69ba9faebe937cbb27c38950e574652",
+      "deployed_version": "20261115054307",
+      "deployed_name": "student_event_attendance",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261115054934_approval_email_and_device_risk.sql",
+      "local_sha256": "1c068aa19b4f178d87c169da57fc3251dc7aa46b7d59c4e6fb8377ea72001429",
+      "deployed_version": "20261115055052",
+      "deployed_name": "approval_email_and_device_risk",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261115055855_attendance_review_indexes.sql",
+      "local_sha256": "6b542365ff8a4b5bd8424d051b888a376015d998a24e755ef96e01e8fc1e0da5",
+      "deployed_version": "20261115060012",
+      "deployed_name": "attendance_review_indexes",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261116192527_institution_college_course_catalog.sql",
+      "local_sha256": "684ae6013ebefade9b8dc8a2598229f841de1ca3119e5d06d0b8bdc615084bdd",
+      "deployed_version": "20261116193311",
+      "deployed_name": "institution_college_course_catalog",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261116195857_attendance_attempt_limits.sql",
+      "local_sha256": "bf2c463d1a6b3a1f383b475da6edb75cac86976dc0863d097dfd253379ebb0b0",
+      "deployed_version": "20261116200354",
+      "deployed_name": "attendance_attempt_limits",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261117022312_privacy_and_manual_attendance.sql",
+      "local_sha256": "c99534489e73728e892732a6c8e41431e59480df29cc9e109f517d6717d15ccf",
+      "deployed_version": "20261117023237",
+      "deployed_name": "privacy_and_manual_attendance",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261119003314_review_center_pagination.sql",
+      "local_sha256": "fb53e66999fa0fa86dc5e89e2509c8884a34c307f2f2c418aad4250412a89e7a",
+      "deployed_version": "20261119003706",
+      "deployed_name": "review_center_pagination",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261119004750_activity_log_pagination.sql",
+      "local_sha256": "6f08211c90a0e61f464a4a7ef301411edc476bd0b3dce646494cc96df89e1155",
+      "deployed_version": "20261119005102",
+      "deployed_name": "activity_log_pagination",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261119020054_roster_directory_and_report_previews.sql",
+      "local_sha256": "fc8c854ad92e2fda5d762491fdb25eb97d8bde505d359c66dd17784322b4832f",
+      "deployed_version": "20261119020354",
+      "deployed_name": "roster_directory_and_report_previews",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261119031327_attendance_checkpoints_and_staff_scanning.sql",
+      "local_sha256": "391d7a4a5fc0a451f7807a063e549260bcfad49b4265ecf15ff82e1474b4aab5",
+      "deployed_version": "20261119032328",
+      "deployed_name": "attendance_checkpoints_and_staff_scanning",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261119143155_attendance_bulk_review.sql",
+      "local_sha256": "b946229da37a300cead98bb7d118977d7b2de46dbdc80109dccb9bf7c1a41652",
+      "deployed_version": "20261119143451",
+      "deployed_name": "attendance_bulk_review",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261120043058_archived_account_email_release.sql",
+      "local_sha256": "1a7f01dd52432141aa5bee7aa5d7201028d6b434df076307d11ebe4dd20be13b",
+      "deployed_version": "20261120043405",
+      "deployed_name": "archived_account_email_release",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261120043416_protect_retired_accounts.sql",
+      "local_sha256": "35e788dd7f5cc6a5990ac09e1bd91dd6d84eb53be17686b82b7f7db596cf7a70",
+      "deployed_version": "20261120043546",
+      "deployed_name": "protect_retired_accounts",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261120044251_fix_email_release_completion_permissions.sql",
+      "local_sha256": "bf63a564621c5d6108c16014cd549452e7b17beda58850c66b7229d50e9822e2",
+      "deployed_version": "20261120044446",
+      "deployed_name": "fix_email_release_completion_permissions",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261122123735_attendance_device_baseline.sql",
+      "local_sha256": "fbed81c9bbdfc79d3b8b5221d8be3e1b7358e40b2d0feefdf28380b7285ad38b",
+      "deployed_version": "20261122124055",
+      "deployed_name": "attendance_device_baseline",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    },
+    {
+      "local_file": "20261122132832_single_active_login_session.sql",
+      "local_sha256": "e0ed91a3a4bf44f8f9e3ac3e5b3c1c6c5c8da3553c99d3805ae3d55305b90223",
+      "deployed_version": "20261122133046",
+      "deployed_name": "single_active_login_session",
+      "comparison": "Ordered inventory mapping; timestamps differ. Do not replay or repair history blindly."
+    }
+  ],
+  "source_hashes": [
+    {
+      "path": "src/app.js",
+      "sha256": "085cf8bc2e7ce926aa517ecb95d39b8e5fb32c7ba5d290716aeb5b4152e305bc"
+    },
+    {
+      "path": "src/config/env.js",
+      "sha256": "f8703fe9f202b942dc72073dbca6e26a4455a2b78cd117dbc0f73f90e9992979"
+    },
+    {
+      "path": "src/config/privacy.js",
+      "sha256": "e39395f98bb598aed7ee26c4ba4e49cfae18958437ed9264a604184b538ef3e3"
+    },
+    {
+      "path": "src/config/supabase.js",
+      "sha256": "c3fe14781f87f7fcc267cb309d69666e287ab1ead8a567d9f654cc1e882e69c7"
+    },
+    {
+      "path": "src/controllers/account-activity-controller.js",
+      "sha256": "36cd442522abc540c6ca36edf6cc5e466ee9d11d6cefe8905e013c4dfda9b2a2"
+    },
+    {
+      "path": "src/controllers/activity-logs-controller.js",
+      "sha256": "2f3b5c8dfc839a88ef1b2a64df2a5ee396b4863ae4d094171f37f45bf36ae0a8"
+    },
+    {
+      "path": "src/controllers/admin-controller.js",
+      "sha256": "b53d4261c10786aabf5cf9208ca870c9cc0847ddf81d159d4abcb2d12058306e"
+    },
+    {
+      "path": "src/controllers/attendance-controller.js",
+      "sha256": "0d031f7ba1c3aa8a509c36b238487249914bdf08337469e83d2d78b63349a1d4"
+    },
+    {
+      "path": "src/controllers/auth-controller.js",
+      "sha256": "5fd00edd55cc124bfae22670a7f5a4980a1f662d23d76aacae2a26bafa4a9ae2"
+    },
+    {
+      "path": "src/controllers/email-release-controller.js",
+      "sha256": "9cee6359d0e20a50196c623a127e9407f3ff95e88c4d7e534b6ddd2824dd18e3"
+    },
+    {
+      "path": "src/controllers/health-controller.js",
+      "sha256": "360fb5e0f6123ba509e0d071fd3d337acae708e06010cfd2bf0e83ddcfc3521e"
+    },
+    {
+      "path": "src/controllers/portal-controller.js",
+      "sha256": "2c108d5e9f845d33b99af598e9b0e9206e648315b983a8a023bda918cdd49c0a"
+    },
+    {
+      "path": "src/controllers/report-controller.js",
+      "sha256": "34b2e1c34270431f6abb680887334059b9341730f8056758d40d98be51fb8150"
+    },
+    {
+      "path": "src/controllers/review-center-controller.js",
+      "sha256": "942b79dbf4288edb1c620662c757e0961732edce3313ca9cbe80180fab68437b"
+    },
+    {
+      "path": "src/controllers/student-controller.js",
+      "sha256": "5ff263a24ef0d88fc1a0faddb4e59ad64f3ff2a724d81c670cd4f87b76ed7b01"
+    },
+    {
+      "path": "src/controllers/student-directory-controller.js",
+      "sha256": "e4a338ac367d5e788685ca9e0d3339727537a6d26c6fbd19c31e5babe967eab2"
+    },
+    {
+      "path": "src/middleware/authenticate-user.js",
+      "sha256": "5c42e9ea366c407600f17d383e2496e774265f7b0c7ce981ebe266020ba8051c"
+    },
+    {
+      "path": "src/middleware/error-handler.js",
+      "sha256": "dbafa67f925acafdde509f6cffda36b209781ceb9c72e09c6b69a6886a5d56ec"
+    },
+    {
+      "path": "src/middleware/not-found.js",
+      "sha256": "fb2bde5c71e4bf62f37e12ff4812bcc4b37552bc8f179ab05e368affff94e334"
+    },
+    {
+      "path": "src/middleware/rate-limit.js",
+      "sha256": "48e671ff4677ba42c42bd50dd1b88dc2b6cb07e2bba5522cad4d401e6139c87b"
+    },
+    {
+      "path": "src/routes/admin-management.js",
+      "sha256": "a2381121d4c6c623b8a5e8f9c7a43862f05f39592417cd4018d3f77ea0edbafd"
+    },
+    {
+      "path": "src/routes/admin-reports.js",
+      "sha256": "232c2b825d6d64f2e7bac9c659e59d9f608d486a994d23967aba61867a2e9900"
+    },
+    {
+      "path": "src/routes/attendance.js",
+      "sha256": "c14f6a6642d7e5a1c8c1708ff5ff5d0cc5bc40a94c6360cfcb86bc5a5df4d65d"
+    },
+    {
+      "path": "src/routes/auth.js",
+      "sha256": "0e5e5c8cc1f49f4c8a0aa8144ffcfe79561ef36e7d52ac4e9095bbb13dd8ca2d"
+    },
+    {
+      "path": "src/routes/health.js",
+      "sha256": "1b5f337675cd3bb9190f3fda83d16ca39c35d351f34debc98632d531fdd2b91c"
+    },
+    {
+      "path": "src/routes/index.js",
+      "sha256": "3400ea2503040b9626a3dcaffdb9dde1039b8adfecffbfdc6554ecb197346447"
+    },
+    {
+      "path": "src/routes/student.js",
+      "sha256": "2063eb0dff1d779b019ed5f9e9c53fbf7940f2039f9bfdb5c93ea5f1e7123802"
+    },
+    {
+      "path": "src/server.js",
+      "sha256": "bb6be1658b01b6ac93bbece78db4c00e3ec00bb015dc3fc86d258460100b0587"
+    },
+    {
+      "path": "src/services/academic-service.js",
+      "sha256": "133eaa558c85146b8f54eafdb691443a934742b5371a76959076ce09abcfaf5d"
+    },
+    {
+      "path": "src/services/attendance-service.js",
+      "sha256": "ae6dfa3b4275284f219fb60737409bfd920d17c9b61c59c21e914869b815169a"
+    },
+    {
+      "path": "src/services/audit-service.js",
+      "sha256": "458855181bc78da37271aa85ba76f7345d3898515270bca8e760948675af111c"
+    },
+    {
+      "path": "src/services/change-password-service.js",
+      "sha256": "57780a7d16863984c52d633938a0a18dd4888e98dcd02e779147d98c59ce2b21"
+    },
+    {
+      "path": "src/services/email-release-service.js",
+      "sha256": "563e3915fd369c8c805c6f898c3d80f3ce0c417474ce43104bb365fcafaeeadb"
+    },
+    {
+      "path": "src/services/health-service.js",
+      "sha256": "7c36f9014a6b912db9b0c1ffc70ccf11ceb3adb129f0766a0a7fc15492ad2f2f"
+    },
+    {
+      "path": "src/services/login-session-service.js",
+      "sha256": "37b4755f62905a0fbd65d8453048f3dbc1ec55cbe4766f61ed36980b61eeb042"
+    },
+    {
+      "path": "src/services/report-service.js",
+      "sha256": "839f881b51cc70137908d17382a9a7c95c5a842a8599ee8ef24786cbcda6b591"
+    },
+    {
+      "path": "src/services/security-service.js",
+      "sha256": "27812d5293c2fc1bd2526c0b7bd24c028d0deb54bfd61bdb94052801263680d0"
+    },
+    {
+      "path": "src/utils/report-role.js",
+      "sha256": "4c5facf24ab0fc7e7efde2d44578a41ba892b51e4839ab7d3aca642978886801"
+    },
+    {
+      "path": "src/utils/validate.js",
+      "sha256": "a57b4108089e34284c02db34b834e3e0f49719a166a37d323cdd47c8775f1437"
+    },
+    {
+      "path": "src/validators/admin-validator.js",
+      "sha256": "162c95fcc27d0cd77782fd35b4f1a8c8ca8756aa1a9e9bfe4dc99234bdbee304"
+    },
+    {
+      "path": "src/validators/change-password-validator.js",
+      "sha256": "1c6cedbbc122655eba2b2acda7090a14d41aa8a4a5de0412ead3efd4ede656b3"
+    },
+    {
+      "path": "src/validators/check-in-validator.js",
+      "sha256": "c5455eb11df702a8efbc0659f31e30820617c4750aaec92a2653a0a428438e97"
+    },
+    {
+      "path": "src/validators/health-validator.js",
+      "sha256": "4e56e81a68d913f58b817d7b6058cf543e1970482834216103f769e0a9101ca1"
+    },
+    {
+      "path": "src/validators/password-validator.js",
+      "sha256": "a75c97a8c3c73d97c9de6ccad2073ec655fce924b637c8b563c17d4364197324"
+    },
+    {
+      "path": "src/validators/report-validator.js",
+      "sha256": "c1387d30e58be69854193399ce4448e2a31daadc4763e89b1f3d27b10380e4da"
+    },
+    {
+      "path": "src/workers/report.worker.js",
+      "sha256": "4159bf5164aa4ebc08748665ac8fdef5c5b46330d44e554e57a02b69b14048b1"
+    },
+    {
+      "path": "public/assets/col-logo.jpg",
+      "sha256": "ef10e1371936a02ceeec4e42009ecc02f671698ae99b44856ec1c39acc6f6412"
+    },
+    {
+      "path": "public/css/accessibility.css",
+      "sha256": "e365afaf1e6bdaec7001186702b04119bf55d778a5d49c1aecde44fefb417f3b"
+    },
+    {
+      "path": "public/css/brand-theme.css",
+      "sha256": "13f3879eaf9603a3f39b1a37f054ba14bf3ae8629b18e6785ba4bce9c9b237e2"
+    },
+    {
+      "path": "public/css/light-theme.css",
+      "sha256": "8c46bf0314786fa3784506b81d3fd07843c745b73c171b30694ebd20d1b4624a"
+    },
+    {
+      "path": "public/css/styles.css",
+      "sha256": "629037e1db9ae716e601610fe88860dc5b6b47c68247c58977e8c60153c95d1d"
+    },
+    {
+      "path": "public/index.html",
+      "sha256": "6a3dc9647532598905be75693b29996ad14c464649165bd469bcc64253608960"
+    },
+    {
+      "path": "public/js/academic-selects.js",
+      "sha256": "96ed74873655bee726ca34cfd4c1863ab9896a64d21aee6fabbd70351c148e86"
+    },
+    {
+      "path": "public/js/account-page.js",
+      "sha256": "2e279cf9ec9bc9194edfac8916f9db3dda7ea3d0936bf3e4d7a0bcfc45b3887a"
+    },
+    {
+      "path": "public/js/activity-logs.js",
+      "sha256": "74d399b35c72650f5758b05fab39651b07c5866170c5e10c212a48ee12bd7f88"
+    },
+    {
+      "path": "public/js/admin-tools.js",
+      "sha256": "d1b19b23bc06b0c733549708b41872d3e928552438164df428856f399c2285be"
+    },
+    {
+      "path": "public/js/admin.js",
+      "sha256": "e3a7ea1806925422c54557f0531b7c3f019622385cf2b503a0e3a0ff7dc92850"
+    },
+    {
+      "path": "public/js/app.js",
+      "sha256": "0dc4afd0b919136b2a9baa857bcb5517af58d840dcb4ddeee5f60f327d10d785"
+    },
+    {
+      "path": "public/js/auth-guard.js",
+      "sha256": "8e283e5ecae110ee96a51dca3d4a1c6ce75aad8c9abc9d1e7ede189f0d163b82"
+    },
+    {
+      "path": "public/js/auth.js",
+      "sha256": "f786773028e96218bebfa3a9808b33caf5f2d2ef4d5cb47768c08f5c007d3fac"
+    },
+    {
+      "path": "public/js/bootstrap.js",
+      "sha256": "3b671475ccece911c2e2ac65f99d18c6fe64870736931ed3a265286ad7dbe273"
+    },
+    {
+      "path": "public/js/checkpoint-editor.js",
+      "sha256": "0cc2ce50345e01de0e903677d1b27c6e09ac030163d84587e49062febaed7c38"
+    },
+    {
+      "path": "public/js/checkpoints.js",
+      "sha256": "ac90c1759cec7381cd08210bc2ab4243c2275c1610b39ea4ff40a668b2d46022"
+    },
+    {
+      "path": "public/js/decision-dialog.js",
+      "sha256": "79074c3b0ca3f652457d95267b1a304b86a8853013df26659bed134e41b7f36a"
+    },
+    {
+      "path": "public/js/email-release-dialog.js",
+      "sha256": "134c4467b5519aaadba104cc45ac91f0194700fc04c0836786ea5523cf055acb"
+    },
+    {
+      "path": "public/js/notification-bell.js",
+      "sha256": "f6fbe9786f9f150c866163b8a945d96252a85c241390d2bfb404980b957c849c"
+    },
+    {
+      "path": "public/js/pagination.js",
+      "sha256": "28517b4e296e55e93aa9141679365180e1b43548214f6955c2aba0abbae80a92"
+    },
+    {
+      "path": "public/js/password-policy.js",
+      "sha256": "8696940cabb2efb01411185ce7acaf87518a4520ecadc6bc26512c4b8fe08570"
+    },
+    {
+      "path": "public/js/password-visibility.js",
+      "sha256": "f2d1234158d97be06a4957463aef875135454350dc93fd1ec7839dfbe4db5f1a"
+    },
+    {
+      "path": "public/js/pdf-preview.js",
+      "sha256": "600f9859cd2520ed508d332a70a764e3b7b7d9df40eaf9f33bdc0846dda3a115"
+    },
+    {
+      "path": "public/js/portal.js",
+      "sha256": "0d73a05e9d1440ae4983b2a79aa51be1994d7423317f04b2558361d0c0ec61aa"
+    },
+    {
+      "path": "public/js/report-page.js",
+      "sha256": "66b38eddc19d2688df3b52cd86bb810f784444bd474169ff42bbf820ebe94aed"
+    },
+    {
+      "path": "public/js/review-center.js",
+      "sha256": "bfc6446bdd3478470a0a76f732d6191feb90c1256a8eb3e43db4ca0eff5f4df9"
+    },
+    {
+      "path": "public/js/role-search.js",
+      "sha256": "0e4bd40d93d7445d3c0ec0513398bcbb3445ea45e7cd9d32599875554b05e796"
+    },
+    {
+      "path": "public/js/student-directory.js",
+      "sha256": "024b157f615e8d1b61b05e45643ceb0f8f514aa64a7c6ecbcd56c76d145578bb"
+    },
+    {
+      "path": "public/js/student-portal.js",
+      "sha256": "a4df96a65594880f6eecd826a05ce528fc708ccec47f380092e3f5f9f1af8c33"
+    },
+    {
+      "path": "public/js/theme.js",
+      "sha256": "ad6090fe76fd53a38723b780ab052f775605116ff8ebf67233cf91a4a738eea9"
+    },
+    {
+      "path": "public/privacy.html",
+      "sha256": "466742d2936afd6f5e34e2522fde94628b017e8a9d5a5d00fcc2b209c929f674"
+    },
+    {
+      "path": "tests/academic-api.test.js",
+      "sha256": "3b3cc04049bdaa1987bd2a02f2774a43c67bbf3b3ec181ea6f09282f3be77616"
+    },
+    {
+      "path": "tests/academic-catalog.sql",
+      "sha256": "a1a0d42f720b30737334c154a42902a3e7c751b08faadb6d3d55ee06a00db650"
+    },
+    {
+      "path": "tests/account-page.test.js",
+      "sha256": "474552d522b2bd47992712a124c949aa0d4ef5c0bfa2d03003e1e0b5122c0b37"
+    },
+    {
+      "path": "tests/activity-logs.sql",
+      "sha256": "e8eb5e666f4081517e0a858c3782e235cb01ac87b83e09c59fc42f7c649a4f77"
+    },
+    {
+      "path": "tests/attendance-attempts.sql",
+      "sha256": "72cc64ae52ecd14bfc11a668556e23ea08ef5167c280f9123a7360f8d7e5c92f"
+    },
+    {
+      "path": "tests/attendance-device-baseline.sql",
+      "sha256": "fa14afa3aa679ffe1630af8d42a25e89c05d70d1e692121dc007179be24b17df"
+    },
+    {
+      "path": "tests/attendance-workflow.sql",
+      "sha256": "8cebc657687fe6c5e7dd9811bbf3ebab801dd23a6189c1b534108345ebbb9870"
+    },
+    {
+      "path": "tests/auth-guard.test.js",
+      "sha256": "88ccfc853a506990aaf0fa369d9d75cac510d13015de9d621eeee4424ec06ab8"
+    },
+    {
+      "path": "tests/bulk-review.sql",
+      "sha256": "d37c2dccaa78768c8ec8431cdd7f8ce9b3f60f64f1392ea6d343d46d2ede7c95"
+    },
+    {
+      "path": "tests/change-password.test.js",
+      "sha256": "7d68948e9a9e8872adcbe3757cddf7c0a17266082e4278e75bbb642839e10d3f"
+    },
+    {
+      "path": "tests/checkpoints.sql",
+      "sha256": "467b48492b235c55feffbda859ebb4aacde532cab435f9c682a1edebb0fb8e90"
+    },
+    {
+      "path": "tests/checkpoints.test.js",
+      "sha256": "fe1f57b845a2644a878eaf1f1326d1c0806cf3b26aa81898e975fc91064ec4c3"
+    },
+    {
+      "path": "tests/deployed-reports.test.js",
+      "sha256": "497614007cc785348e2d1557af189399c8ba79d986a73cfb7531e750db516408"
+    },
+    {
+      "path": "tests/email-release.sql",
+      "sha256": "a83b30462c52bbc7507e7fd31105654e8143325245acc66b31018e165d6fe4dd"
+    },
+    {
+      "path": "tests/email-release.test.js",
+      "sha256": "4a4da6ee489b32e294417a9add09ceaec66d65e54741970f9c55cb0600f2d25b"
+    },
+    {
+      "path": "tests/event-attempt-settings.test.js",
+      "sha256": "26d181ee340d9cfde5c0be675d747740b8da8ffcaeb72a41550a269ecf87961d"
+    },
+    {
+      "path": "tests/event-security.test.js",
+      "sha256": "21ff4f49f57288ed356b4d4fd999e16f3f13955b9d174d0694764dd15a284471"
+    },
+    {
+      "path": "tests/http-workflow.test.js",
+      "sha256": "cbec531175c8fe77f961ca19f13b5bbe1988e39e6efd883183bf24c8f5f218d1"
+    },
+    {
+      "path": "tests/login-session.test.js",
+      "sha256": "51cb839241d78c3458c5e012b4adae3a8528b5a38c280fb0fc810ba8eabb7a47"
+    },
+    {
+      "path": "tests/manual-attendance.sql",
+      "sha256": "d5a938ed39992c5c9daf0ce572c17050f73050f3aa94557d46e54585a0671419"
+    },
+    {
+      "path": "tests/pagination.test.js",
+      "sha256": "2e7e9475e448920b15cb543f35446052dc0ed425c4f343605b0fc5f4485ceed3"
+    },
+    {
+      "path": "tests/password-policy.test.js",
+      "sha256": "ae9111fac86a02dadcaa56ee9e739ffd8bef4d6703eb0f7d9470f23fbc90ab7b"
+    },
+    {
+      "path": "tests/pdf-preview-assets.test.js",
+      "sha256": "be085daa8f22844155e91e31386e674d68d503eb4e2a257c4b78c2b11ce6f95f"
+    },
+    {
+      "path": "tests/report-role.test.js",
+      "sha256": "20fb4186875da3771a62e9859529fd5ca39a9a96ac3b0dabee846ec1b2282313"
+    },
+    {
+      "path": "tests/report-worker.test.js",
+      "sha256": "321571009f94212c6d5fbd1e23026d22b9f722e2ffbe93f91a1016feb6512d2e"
+    },
+    {
+      "path": "tests/review-center.sql",
+      "sha256": "8d9563a94b924c9f1422566eb1c0eda4ebadc77e3f390ecdda8ec09f630ffcc1"
+    },
+    {
+      "path": "tests/review-filters.test.js",
+      "sha256": "5916847b75caf4569dfb5e65119d8ac5d2f2120bcc3ff4395e404ee7caf0fd7e"
+    },
+    {
+      "path": "tests/role-search.test.js",
+      "sha256": "55308cd293897a689d587381df0df26eb78bcf31da90dc1660110c1847fd6f18"
+    },
+    {
+      "path": "tests/single-active-session.sql",
+      "sha256": "63df6167fc87f1bfa9be9b3984301d88b059906f9b8157ac6c325265758319ef"
+    },
+    {
+      "path": "tests/single-session-http.test.js",
+      "sha256": "dd513189d7258c2a5af776f6474e7f57e200da0ace0a02efe30353d421809e6b"
+    },
+    {
+      "path": "tests/student-directory.sql",
+      "sha256": "d5a4744212edfb04b919d8289d002f62b5fc98c80520923d0d460dbea5e59e18"
+    },
+    {
+      "path": "tests/student-directory.test.js",
+      "sha256": "d550c900c024caaa38da4488dc5fa807bcb8476a80db4c57b7a71b7ee4343f9f"
+    },
+    {
+      "path": "package.json",
+      "sha256": "d53bdedd5be9549e9fb48fcd2b510b632a91a8b37f9986cedee4efbebe6ac7d0"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "63dbc88372d7aa5b3551fa209bb87c776dc3a74febe2dfcb854a7f29d18a4a90"
+    }
+  ],
+  "test_baseline": {
+    "node_tests": 35,
+    "node_passed": 27,
+    "node_failed": 0,
+    "node_skipped": 8,
+    "isolated_sql_fixtures": 12,
+    "isolated_sql_passed": 12
+  },
+  "limitations": [
+    "Local SQL staging uses minimal managed Auth/Storage stubs; not a full Supabase platform restore",
+    "Eight opt-in/live Node integration tests not run",
+    "No live accounts, schema, or attendance decisions changed"
+  ]
+}

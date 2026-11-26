@@ -1,0 +1,31 @@
+{
+  "name": "attendance-monitoring-system",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "School-wide attendance monitoring system",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon --watch src --watch public --watch package.json src/server.js",
+    "local": "node scripts/run-local.js",
+    "test": "node --test tests/*.test.js",
+    "seed:demo": "node scripts/seed-demo-accounts.js"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.119.0",
+    "@vercel/functions": "3.11.3",
+    "docx": "^9.5.1",
+    "dotenv": "^16.4.7",
+    "exceljs": "^3.4.0",
+    "express": "^5.1.0",
+    "pdfjs-dist": "6.5.438",
+    "pdfkit": "^0.17.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
