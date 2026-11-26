@@ -23,7 +23,21 @@
   },
   "v1_changed": false,
   "accounts_copied": false,
-  "initial_administrator": "not yet onboarded",
+  "initial_administrator": "designated owner provisioned and verified",
   "custom_smtp": "not configured",
-  "school_wide_acceptance": "pending physical devices, retention and DOCX visual checks"
+  "school_wide_acceptance": "pending physical devices, retention and DOCX visual checks",
+  "test_accounts": {
+    "count": 5,
+    "roles": [
+      "classroom_representative",
+      "club_president",
+      "col_regular",
+      "col_admin",
+      "administrator"
+    ],
+    "verified_at": "2026-11-26T16:34:02.947Z",
+    "login_and_roles_verified": true,
+    "credentials_in_git": false,
+    "synthetic_test_class": "TEST ONLY - Role Testing"
+  }
 }
