@@ -36,7 +36,9 @@ create table auth.users(id uuid primary key,email text,email_confirmed_at timest
 create table auth.identities(id uuid primary key,user_id uuid references auth.users(id),provider text,provider_id text,identity_data jsonb);
 create table auth.sessions(id uuid primary key,user_id uuid references auth.users(id),created_at timestamptz,not_after timestamptz);
 create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);'''])
-    for file in sorted((app/'supabase/migrations').glob('*.sql')):
+    manifest=app/'supabase/v2-install-order.json'
+    migrations=[app/'supabase/migrations'/name for name in json.loads(manifest.read_text(encoding='utf-8'))['files']] if manifest.exists() else sorted((app/'supabase/migrations').glob('*.sql'))
+    for file in migrations:
         run(psql + ['-1', '-f', file])
         results.append({'file': file.name, 'sha256': hashlib.sha256(file.read_bytes()).hexdigest(), 'passed': True})
     counts = {name: int(run(psql + ['-Atc', 'select count(*) from public.' + name]).strip()) for name in ['students', 'events', 'user_profiles', 'operational_accounts', 'public_attendance_submissions', 'operational_report_jobs']}
@@ -44,7 +46,8 @@ create table storage.buckets(id text primary key,name text,public boolean,file_s
     missing_rls = int(run(psql + ['-Atc', "select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and not c.relrowsecurity"]).strip())
     assert missing_rls == 0
     assert run(psql + ['-Atc', "select public from storage.buckets where id='attendance-reports'"]).strip() == 'f'
-    report = {'database': 'empty isolated PostgreSQL 18 with minimal Auth/Storage stubs', 'migrations': results, 'empty_data_counts': counts, 'tables_without_rls': missing_rls, 'report_bucket_private': True, 'full_supabase_platform_tested': False, 'hosted_database_changed': False}
+    assert run(psql + ['-Atc', "select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('begin_archived_email_release','finish_archived_email_release')"]).strip()=='0'
+    report = {'obsolete_email_release_functions':0,'database': 'empty isolated PostgreSQL 18 with minimal Auth/Storage stubs', 'migrations': results, 'empty_data_counts': counts, 'tables_without_rls': missing_rls, 'report_bucket_private': True, 'full_supabase_platform_tested': False, 'hosted_database_changed': False}
     (staging/'fresh-install-validation.json').write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
     print(json.dumps({'migrations_passed': len(results), 'empty_data_counts': counts, 'tables_without_rls': missing_rls, 'hosted_database_changed': False}))
 finally:

@@ -1,0 +1,36 @@
+{
+  "description": "V2 fresh install only; explicit logical dependencies. Never target V1. No irreversible email-release functions.",
+  "files": [
+    "202611090000_initial_attendance_schema.sql",
+    "202611090001_attendance_unique_checkins.sql",
+    "202611090002_private_attendance_reports_bucket.sql",
+    "202611090004_auth_profiles.sql",
+    "202611090005_account_roles_and_student_links.sql",
+    "202611090006_durable_reports_and_audit_log.sql",
+    "202611090007_archive_roster_and_events.sql",
+    "20261115054157_student_event_attendance.sql",
+    "20261115054934_approval_email_and_device_risk.sql",
+    "20261115055855_attendance_review_indexes.sql",
+    "20261116192527_institution_college_course_catalog.sql",
+    "20261116195857_attendance_attempt_limits.sql",
+    "20261117022312_privacy_and_manual_attendance.sql",
+    "20261119003314_review_center_pagination.sql",
+    "20261119004750_activity_log_pagination.sql",
+    "20261119020054_roster_directory_and_report_previews.sql",
+    "20261119031327_attendance_checkpoints_and_staff_scanning.sql",
+    "20261119143155_attendance_bulk_review.sql",
+    "20261126160054_v2_lifecycle_history_compatibility.sql",
+    "20261122123735_attendance_device_baseline.sql",
+    "20261122132832_single_active_login_session.sql",
+    "20261125171730_operational_access_foundation.sql",
+    "20261125174653_class_rosters_and_assignments.sql",
+    "20261125183053_public_event_attendance.sql",
+    "20261125230133_public_device_binding.sql",
+    "20261126081453_attendance_review_queue.sql",
+    "20261126084411_account_lifecycle_and_audit_trail.sql",
+    "20261126093828_revision_report_snapshots.sql"
+  ],
+  "managed_addons": [
+    "20261126160756_v2_scheduled_review_worker.sql"
+  ]
+}

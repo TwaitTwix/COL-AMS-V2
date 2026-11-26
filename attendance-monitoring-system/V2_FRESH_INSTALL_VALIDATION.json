@@ -1,4 +1,5 @@
 {
+  "obsolete_email_release_functions": 0,
   "database": "empty isolated PostgreSQL 18 with minimal Auth/Storage stubs",
   "migrations": [
     {
@@ -92,18 +93,8 @@
       "passed": true
     },
     {
-      "file": "20261120043058_archived_account_email_release.sql",
-      "sha256": "1a7f01dd52432141aa5bee7aa5d7201028d6b434df076307d11ebe4dd20be13b",
-      "passed": true
-    },
-    {
-      "file": "20261120043416_protect_retired_accounts.sql",
-      "sha256": "35e788dd7f5cc6a5990ac09e1bd91dd6d84eb53be17686b82b7f7db596cf7a70",
-      "passed": true
-    },
-    {
-      "file": "20261120044251_fix_email_release_completion_permissions.sql",
-      "sha256": "bf63a564621c5d6108c16014cd549452e7b17beda58850c66b7229d50e9822e2",
+      "file": "20261126160054_v2_lifecycle_history_compatibility.sql",
+      "sha256": "4df8896a9727cc9615b6650d588266d69f33512cacd8d9c088842d9f71a526e0",
       "passed": true
     },
     {
