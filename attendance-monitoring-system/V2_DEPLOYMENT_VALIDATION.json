@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-27",
+  "timezone": "Asia/Shanghai",
+  "v2_url": "https://col-ams-v2.vercel.app",
+  "repository": "https://github.com/TwaitTwix/COL-AMS-V2",
+  "runtime_commit": "d7898c3e58893ded243de2f57c4c754af924980f",
+  "initial_deployment": "dpl_HWakSDhTq2XDwXyCkBsfdrKpGgUS",
+  "vercel_region": "sin1",
+  "supabase_project": "jpdebursuvgxgdklpbod",
+  "supabase_region": "ap-southeast-1",
+  "core_migrations": 28,
+  "managed_cron_addon": true,
+  "obsolete_email_release_functions": 0,
+  "public_signup": false,
+  "email_confirmation_required": true,
+  "private_bucket_verified": true,
+  "service_rest_access_verified": true,
+  "scheduler_verified": "succeeded",
+  "node_tests": {
+    "passed": 68,
+    "skipped": 8,
+    "failed": 0
+  },
+  "v1_changed": false,
+  "accounts_copied": false,
+  "initial_administrator": "not yet onboarded",
+  "custom_smtp": "not configured",
+  "school_wide_acceptance": "pending physical devices, retention and DOCX visual checks"
+}

@@ -1,63 +1,15 @@
-# Vercel deployment
+# V2 deployment
 
-Production: https://col-ams.vercel.app
+Live website: https://col-ams-v2.vercel.app
 
-Project: `col11/col-ams`. GitHub: `TwaitTwix/COL-AMS`, production branch `main`.
-The Vercel root directory is `attendance-monitoring-system`, the framework is Express,
-the Node version is 24.x, and functions run in Singapore (`sin1`) near Supabase.
+Repository: TwaitTwix/COL-AMS-V2, main. Vercel project col11/col-ams-v2, ID prj_8Ri80VoMgW3Oorb60ZaLCNjydDTm. Root attendance-monitoring-system, Express / Node 24, Singapore functions sin1. Pushes to this repository deploy V2; never push revised work into the V1 repository.
 
-## Environment
+Supabase project: col-ams-v2, jpdebursuvgxgdklpbod, Singapore ap-southeast-1. Schema and fresh-install order are described in supabase/v2-install-order.json. Do not use a blind migration push: hosted migration timestamps are recorded separately from the original source timestamps.
 
-The Supabase URL, publishable key, server secret, reports bucket, and canonical
-`PUBLIC_APP_URL=https://col-ams.vercel.app` are configured in Vercel. Server secrets
-are private Vercel environment variables. Local `.env`, demo credentials, previews,
-dependencies, and Vercel authentication files are excluded from uploads and Git.
+The V2 Vercel environment has its own Supabase URL, publishable key, private secret key, device-signing secret, scheduler secret and private attendance-reports bucket. ACCESS_MODE=revision, APP_MAINTENANCE=false, PUBLIC_APP_URL=https://col-ams-v2.vercel.app. No private values are stored in Git. Public signup is closed and email confirmation remains required. Auth redirects target the V2 host and local development.
 
-Do not copy production secrets into GitHub, browser code, or `vercel.json`.
-`scripts/configure-vercel-env.js` can transfer the local application settings to an
-already-linked Vercel project through stdin when explicitly authorized. It never
-prints values and does not transfer the local development URL.
+A database pg_cron job runs review escalation once per minute and its successful execution was verified. This is independent of Vercel cron. The Vercel build explicitly packages worker files and their utility modules.
 
-## Authentication redirects
+V2 is a fresh installation: no V1 accounts, passwords, sessions, classes, events or attendance were migrated. The first administrator must use the designated owner's verified V2 identity; custom SMTP is not copied from V1. Physical phone/QR/GPS, retention approval and DOCX visual validation remain acceptance steps.
 
-In [Supabase URL Configuration](https://supabase.com/dashboard/project/wazszxhrocurhlkadfca/auth/url-configuration),
-set the Site URL to `https://col-ams.vercel.app` and allow
-`https://col-ams.vercel.app/` as a redirect. Retain localhost redirects if needed for
-local development. This account-level configuration is separate from Vercel environment
-variables; delivery and final redirects need verification from a real email inbox.
-
-## Reports on Vercel
-
-The app is exported from `src/app.js`; the local listening server is not started on
-Vercel. Files in `public` are served through Vercel's CDN. Runtime bundles include
-the report worker and its dependencies.
-
-The report submission route uses `waitUntil` to keep the invocation alive after
-the immediate HTTP 202 response. The worker still runs in a separate Node thread.
-Report claims and status are persisted in Supabase; conditional claims prevent
-duplicate processing across scaled instances. Polling a queued job resumes it.
-A processing claim older than six minutes can be reclaimed on a subsequent poll.
-
-Function duration is five minutes; workers are stopped after four minutes so a
-failed result can be persisted before the platform timeout. Reports exceeding this
-limit need a separately provisioned durable worker/queue. The app's local startup
-queue continues to be used when running outside Vercel.
-
-IP rate limits are per running instance, not a shared cross-instance quota.
-For strict global quotas at larger scale, provision a shared limiter or Vercel
-Firewall rules. Vercel requests use its trusted proxy for network and HTTPS metadata.
-
-## Verification
-
-The deployed homepage, health API, Auth configuration, college catalog, event
-page routing, and logo returned HTTP 200. Student/admin demo sign-in and access
-restrictions passed. Hosted CSV, XLSX, PDF, and DOCX jobs completed and their private
-signed downloads had the expected file signatures. The expired deployment-test
-event was archived immediately and never accepted attendance.
-
-The Windows native Vercel CLI could not run a local Express build because it was
-missing its bundled `@vercel/express` package. Vercel's remote Linux build succeeded.
-
-Use `npm test` for offline tests. Opt-in hosted smoke tests require local ignored
-demo credentials. `TEST_BASE_URL` enables the API test;
-`TEST_REPORT_BASE_URL` enables the report test, which creates an archived test event.
+V1 remains https://col-ams.vercel.app and Supabase wazszxhrocurhlkadfca, unchanged. Historical setup is retained in DEPLOYMENT_V1_REFERENCE.md; those instructions are not V2 targets.

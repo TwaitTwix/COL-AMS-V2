@@ -1,10 +1,10 @@
 # COL Attendance Management System V2
 
-> Major revision: phases 0–7 are verified locally. Phase 8 reports and local rehearsal are implemented; release gates remain open. Start with [REVISION_PLAN.md](REVISION_PLAN.md), [REVISION_REPORTS.md](REVISION_REPORTS.md), and [REVISION_RELEASE_RUNBOOK.md](REVISION_RELEASE_RUNBOOK.md). The production site still uses the legacy flow.
+> Major revision: phases 0–7 are verified locally. Phase 8 reports and local rehearsal are implemented; release gates remain open. Start with [REVISION_PLAN.md](REVISION_PLAN.md), [REVISION_REPORTS.md](REVISION_REPORTS.md), and [REVISION_RELEASE_RUNBOOK.md](REVISION_RELEASE_RUNBOOK.md). V1 still uses the legacy flow; V2 is deployed separately in revision mode.
 
 Node.js / Express, Supabase Auth and Postgres, private Storage, and a responsive browser interface for MCNP and ISAP.
 
-V2 deployment target: https://col-ams-v2.vercel.app (pending the separate Supabase database). Legacy references below describe V1. Hosting details and remaining email redirect setup are in [DEPLOYMENT.md](DEPLOYMENT.md). Use Node.js 24.x for local development.
+Live V2: https://col-ams-v2.vercel.app, with the separate Singapore Supabase project jpdebursuvgxgdklpbod. Legacy references below describe V1. Hosting details and remaining email redirect setup are in [DEPLOYMENT.md](DEPLOYMENT.md). Use Node.js 24.x for local development.
 
 The ISAP/MCNP institution → college → course mappings and handling of legacy records are documented in [ACADEMIC_CATALOG.md](ACADEMIC_CATALOG.md).
 

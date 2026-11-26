@@ -31,3 +31,7 @@ V2 starts with no operational accounts, classes, events or attendance. Initial a
 ## Managed scheduler
 
 Supabase pg_cron is enabled on V2 only. Job col-ams-v2-review-escalation runs public.process_attendance_review_queue(100) every minute inside the database. This does not require a paid Vercel minute scheduler. Its SQL is listed as a managed add-on in the V2 install manifest and excluded from the minimal Windows PostgreSQL substitute. Verify cron.job_run_details and attendance_review_worker_health after activation.
+
+## Deployment verification
+
+Live https://col-ams-v2.vercel.app. Initial runtime deployment dpl_HWakSDhTq2XDwXyCkBsfdrKpGgUS reached READY from commit d7898c3e58893ded243de2f57c4c754af924980f and reports Singapore sin1. Health and public Auth config return 200; config points only to jpdebursuvgxgdklpbod, revision mode, registration closed. Real V2 service-key REST access and private-bucket metadata both return 200. Anonymous operational access returns 401; legacy/admin and registration APIs return 403. The deployed sign-in screen was visually checked. All 68 active Node tests pass (8 existing opt-in tests skipped). Supabase security advisor findings are INFO-only RLS/no-policy notices for service-only tables, expected with this server API design; no browser policies were added. The minute scheduler is active and cron job history reports succeeded. No V1 writes were made.
