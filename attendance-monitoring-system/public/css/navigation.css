@@ -31,7 +31,6 @@ html { scrollbar-gutter:stable; }
 .dashboard-event,.dashboard-review { padding:1rem 0; border-bottom:1px solid var(--line,#555); }
 .dashboard-event h3,.dashboard-review h3 { margin:.25rem 0; font-size:1.1rem; }
 .dashboard-event p,.dashboard-review p { margin:.35rem 0; }
-.dashboard-notice { border-left:3px solid var(--accent,#ddd); padding-left:1rem; }
 [data-theme="light"] .dashboard-summary button { background:#fff; }
 @media(max-width:760px){
  .topbar { gap:.75rem; padding:max(.75rem,env(safe-area-inset-top)) 1rem .75rem; }
