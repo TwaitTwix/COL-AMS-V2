@@ -41,3 +41,13 @@
 .review-heading button { flex:0 1 auto; }
 
 .audit-table { min-width:640px; }
+
+/* Header actions must not inherit the full-row flex used by form buttons. */
+.section-list-heading { gap:1rem; flex-wrap:wrap; margin-bottom:1.25rem; }
+.section-list-heading h2 { margin:0; }
+.section-list-heading [data-create-section] { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; flex:0 0 auto; width:auto; min-height:48px; padding:.65rem 1rem; white-space:nowrap; margin-left:auto; }
+.section-list-heading [data-create-section] span { font-size:1.25rem; line-height:1; }
+@media(max-width:420px) {
+ .section-list-heading { flex-direction:column; align-items:flex-start; gap:.75rem; }
+ .section-list-heading [data-create-section] { margin-left:0; }
+}
