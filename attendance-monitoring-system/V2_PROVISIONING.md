@@ -11,6 +11,12 @@ Updated November 26, 2026 (Asia/Shanghai). User requested keeping the old projec
 - Verified the new project exists with no deployment yet. Did not link it to the shared Git repository or change the original .vercel/project.json.
 - Validated all 30 migrations, in order, on an empty disposable local PostgreSQL 18 database with minimal managed-service stubs. No old data copied. Zero users, accounts, students, events or attendance created; all application tables have RLS; report bucket remains private. Evidence: .local-preview/fresh-install-validation.json.
 
+## Separate Git repository
+
+Published the credential-free revised source to https://github.com/TwaitTwix/COL-AMS-V2.git, branch main. Initial source commit: 5f67ee7a4cb51da51d547bf519470bf8fe536ef3. A fresh Git history was used; the old repository history and local .git metadata were not copied. The original COL-AMS origin and HEAD (56789c8b0086cb6995fccda4939981fe4037faf0) were unchanged. Runtime/schema/test files (198) match the verified workspace byte-for-byte; only V2-facing setup documentation and .env.example defaults differ.
+
+The V2 checkout is at .local-preview/v2-repository within this workspace and has its own origin. Local credentials, old Vercel linkage, dependencies and previews are absent from the commit. The new Vercel project is not yet Git-connected or deployed; database capacity is still pending. Connect it only to TwaitTwix/COL-AMS-V2, never the shared V1 repository.
+
 ## Pending Supabase capacity
 
 User selected TwaitTwix's Org (ofzkcxekljmzniemuebs) and Singapore (ap-southeast-1). The create_project request failed because the owner has reached the two-active-free-project limit. No new Supabase project ID was returned. get_cost quoted a project at $0/month, but that does not waive the active-project limit. No paid plan/cost was accepted or enabled.
